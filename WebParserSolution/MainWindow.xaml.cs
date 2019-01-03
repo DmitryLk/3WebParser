@@ -12,17 +12,43 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WebParser.PresentierController;
 
-namespace WebParserSolution
+
+namespace WebParser.UI
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IPresentierView, IControllerView
     {
+
+        public event EventHandler<MyEventArgs> ImdbRequestUIEvent = delegate { };
+
         public MainWindow()
         {
             InitializeComponent();
+
+        }
+
+        //public string FilmName
+        //{
+        //    get { return tbFilmName.Text; }
+        //    //set { tbFilmName.Text = value; }
+        //}
+
+        public string ImdbFilmRating
+        {
+            //get { return tbFilmName.Text; }
+            set { lbImdbFilmRating.Content = value; }
+        }
+
+
+        private void butIMDB_Click(object sender, RoutedEventArgs e)
+        {
+            if (ImdbRequestUIEvent!=null) ImdbRequestUIEvent(this, new MyEventArgs() { MyEventParameter = tbFilmName.Text});
+        
+           
         }
     }
 }
