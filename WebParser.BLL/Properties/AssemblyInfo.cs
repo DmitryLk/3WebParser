@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Общие сведения об этой сборке предоставляются следующим набором
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
-[assembly: AssemblyTitle("WebParser.BLL")]
+[assembly: AssemblyTitle("WebParser.App")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("HP Inc.")]
-[assembly: AssemblyProduct("WebParser.BLL")]
+[assembly: AssemblyProduct("WebParser.App")]
 [assembly: AssemblyCopyright("Copyright © HP Inc. 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

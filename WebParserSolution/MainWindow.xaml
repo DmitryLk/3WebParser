@@ -22,9 +22,9 @@
 
 
 
-        <Border BorderBrush="Gray" BorderThickness="1,1" Margin="28,78,25.6,47" RenderTransformOrigin="0.5,0.5">
+        <Border BorderBrush="Gray" BorderThickness="1,1" Margin="28,118,25.6,7" RenderTransformOrigin="0.5,0.5">
             <!--<cefSharp:ChromiumWebBrowser x:Name="ChromiumWebBrowser2" Grid.Row="0" Address="https://google.com" RenderTransformOrigin="0.5,0.5" >-->
-            <cefSharp:ChromiumWebBrowser x:Name="ChromiumWebBrowser2" Grid.Row="0" Address="https://google.com"  >
+            <cefSharp:ChromiumWebBrowser x:Name="cwbBrowser" Grid.Row="0" Address="https://google.com" Margin="1.2,-0.8,-1.6,0.6"  >
                     <cefSharp:ChromiumWebBrowser.RenderTransform>
                         <TransformGroup>
                             <!--<ScaleTransform ScaleY="0.6" ScaleX="0.6"/>-->
@@ -37,6 +37,7 @@
                 </cefSharp:ChromiumWebBrowser.RenderTransform>
             </cefSharp:ChromiumWebBrowser>
         </Border>
+        <Image x:Name="imgTestImage" HorizontalAlignment="Left" Height="100" Margin="668,10,0,0" VerticalAlignment="Top" Width="100"/>
 
     </Grid>
 </Window>
