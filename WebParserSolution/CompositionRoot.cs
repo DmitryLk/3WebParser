@@ -31,25 +31,33 @@ namespace WebParser.UI
         public void Register()
         {
             var builder = new ContainerBuilder();
-            
-            builder.RegisterType<RequestImdbByFilmNameInteractor>().As<IInteractor>();
+
+
             builder.RegisterType<Presentier>().As<IPresentier>().WithParameter("view", _window);
             builder.RegisterType<Repository>().As<IRepository>();
             builder.RegisterType<MessageServiceUI>().As<IMessageServiceUI>();
             builder.RegisterType<Validator<RequestDTO>>().As<IValidator<RequestDTO>>();
+
+            builder.RegisterType<RequestImdbByFilmNameInteractor>();
             builder.RegisterType<Controller>();
 
-            
+
             _container = builder.Build();
             
         }
 
         public void Resolve()
         {
-            Controller controller = _container.Resolve<Controller>();
+            var requestImdbByFilmNameInteractor = _container.Resolve<RequestImdbByFilmNameInteractor>();
+
+            var requestImdbByFilmNameController = _container.Resolve<Controller>(new NamedParameter("interactor", requestImdbByFilmNameInteractor));
 
 
-            _window.ImdbRequestUIEvent += controller.Handle;
+            //Controller controller = _container.Resolve<Controller>();
+
+
+
+            _window.ImdbRequestUIEvent += requestImdbByFilmNameController.Handle;
 
         }
 
