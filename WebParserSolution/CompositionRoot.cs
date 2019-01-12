@@ -48,6 +48,7 @@ namespace WebParser.UI
         {
             Controller controller = _container.Resolve<Controller>();
 
+
             _window.ImdbRequestUIEvent += controller.Handle;
 
         }
