@@ -84,11 +84,16 @@ namespace WebParser.UI
         {
 
             var requestImdbByFilmNameController = _container.Resolve<IController>(new NamedParameter("typeName", "ImdbRatingByFilmName"));
-            var RequestSpaceObjectImageByNameController = _container.Resolve<IController>(new NamedParameter("typeName", "SpaceObjectImageByName"));
+            var requestSpaceObjectImageByNameController = _container.Resolve<IController>(new NamedParameter("typeName", "SpaceObjectImageByName"));
 
 
 
             _window.ImdbRequestUIEvent += requestImdbByFilmNameController.Handle;
+            _window.SpaceObjectImageRequestUIEvent += requestSpaceObjectImageByNameController.Handle;
+
+            
+
+
         }
 
         public void Release()

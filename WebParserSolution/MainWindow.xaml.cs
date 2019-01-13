@@ -25,6 +25,7 @@ namespace WebParser.UI
     {
 
         public event EventHandler<MyEventArgs> ImdbRequestUIEvent = delegate { };
+        public event EventHandler<MyEventArgs> SpaceObjectImageRequestUIEvent = delegate { };
 
         public MainWindow()
         {
@@ -49,6 +50,12 @@ namespace WebParser.UI
         {
             if (ImdbRequestUIEvent!=null) ImdbRequestUIEvent(this, new MyEventArgs() { MyEventParameter = tbFilmName.Text});
 
+        }
+
+        private void butSpaceObject_Click(object sender, RoutedEventArgs e)
+        {
+
+            if (SpaceObjectImageRequestUIEvent != null) SpaceObjectImageRequestUIEvent(this, new MyEventArgs() { MyEventParameter = tbFilmName.Text });
 
             BitmapImage image = new BitmapImage();
             image.BeginInit();
@@ -56,7 +63,6 @@ namespace WebParser.UI
             image.UriSource = new Uri("https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Voyager_2_picture_of_Oberon.jpg/220px-Voyager_2_picture_of_Oberon.jpg");
             image.EndInit();
             imgTestImage.Source = image;
-
 
         }
     }
