@@ -8,7 +8,7 @@ namespace WebParser.App
 {
     public interface IPresentier
     {
-        void Handle(ResponseDTO response);
+        void Handle(ImdbRatingResponseDTO response);
 
         void ShowMessage(string message);
         void ShowExclamation(string exclamation);

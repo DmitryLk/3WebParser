@@ -84,10 +84,12 @@
     <Compile Include="Ports\IInteractor.cs" />
     <Compile Include="Ports\IPresentier.cs" />
     <Compile Include="Ports\IRepository.cs" />
-    <Compile Include="Ports\RequestDTO.cs" />
-    <Compile Include="Ports\ResponseDTO.cs" />
+    <Compile Include="Ports\FilmNameRequestDTO.cs" />
+    <Compile Include="Ports\SpaceObjectNameRequestDTO.cs" />
+    <Compile Include="Ports\ImdbRatingResponseDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UseCases\RequestImdbByFilmNameInteractor.cs" />
+    <Compile Include="UseCases\RequestSpaceObjectImageByNameInteractor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WebParser.Domain\WebParser.Domain.csproj">

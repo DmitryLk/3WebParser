@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace WebParser.App
 {
-    public interface IInteractor
+    public interface IInteractor<T>
     {
-        void Execute(RequestDTO requestDTO);
+        void Execute(T requestDTO);
     }
 }

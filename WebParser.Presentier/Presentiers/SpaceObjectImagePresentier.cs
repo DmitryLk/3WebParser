@@ -8,13 +8,13 @@ using WebParser.App;
 
 namespace WebParser.PresentierController
 {
-    public class Presentier : IPresentier
+    public class SpaceObjectImagePresentier : IPresentier
     {
         private readonly IPresentierView _view;
         private readonly IMessageServiceUI _messageServiceUI;
 
 
-        public Presentier(IPresentierView view, IMessageServiceUI messageServiceUI)
+        public SpaceObjectImagePresentier (IPresentierView view, IMessageServiceUI messageServiceUI)
         {
             _view = view;
             _messageServiceUI = messageServiceUI;
@@ -22,16 +22,16 @@ namespace WebParser.PresentierController
 
     
 
-        public void Handle(ResponseDTO response)
+        public void Handle(ImdbRatingResponseDTO response)
         {
             _view.ImdbFilmRating = response.ImdbRating.ToString("N2");
         }
 
+
+
         public void ShowMessage(string message) => _messageServiceUI.ShowMessage(message);
         public void ShowExclamation(string exclamation) => _messageServiceUI.ShowExclamation(exclamation);
         public void ShowError(string error) => _messageServiceUI.ShowError(error);
-
-
 
     }
 }

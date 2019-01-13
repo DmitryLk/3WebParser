@@ -23,6 +23,7 @@ namespace WebParser.Data
             web = new HtmlWeb();
             document = web.Load(webs);
 
+            return 5.5F;
 
             //System.Net.WebRequest request = System.Net.WebRequest.Create(url);
 
@@ -38,7 +39,7 @@ namespace WebParser.Data
             //    bitmap.EndInit();
             //    bitmap.Freeze();
             //}
-       
+
 
 
 
@@ -328,7 +329,7 @@ width="220" height="220" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/
         */
 
 
-            return 5.5F;
+
         }
     }
 }

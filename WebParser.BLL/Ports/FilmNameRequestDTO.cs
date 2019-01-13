@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebParser.App
 {
-    public class RequestDTO
+    public class FilmNameRequestDTO
     {
         [Required (ErrorMessage = "Film name {0} is required")]
         [StringLength(30, MinimumLength = 1, ErrorMessage = "Film name lenght should be between 1 and 30")]

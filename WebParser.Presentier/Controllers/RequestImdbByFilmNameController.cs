@@ -8,12 +8,12 @@ using WebParser.App;
 
 namespace WebParser.PresentierController
 {
-    public class Controller
+    public class RequestImdbByFilmNameController : IController
     {
-        private readonly IInteractor _interactor;
+        private readonly IInteractor<FilmNameRequestDTO> _interactor;
         private readonly IMessageServiceUI _messageServiceUI;
 
-        public Controller(IInteractor interactor, IMessageServiceUI messageServiceUI)
+        public RequestImdbByFilmNameController(IInteractor<FilmNameRequestDTO> interactor, IMessageServiceUI messageServiceUI)
         {
             _interactor = interactor;
             _messageServiceUI = messageServiceUI;
@@ -24,7 +24,7 @@ namespace WebParser.PresentierController
         {
             try
             {
-                _interactor.Execute(new RequestDTO { FilmName = e.MyEventParameter });
+                _interactor.Execute(new FilmNameRequestDTO { FilmName = e.MyEventParameter });
             }
             catch (Exception ex)
             {

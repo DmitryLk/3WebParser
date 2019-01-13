@@ -77,11 +77,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\Controller.cs" />
+    <Compile Include="Controllers\IController.cs" />
+    <Compile Include="Controllers\RequestSpaceObjectImageByNameController.cs" />
+    <Compile Include="Controllers\RequestImdbByFilmNameController.cs" />
     <Compile Include="Ports\IMessageServiceUI.cs" />
     <Compile Include="Ports\IControllerView.cs" />
     <Compile Include="Ports\IPresentierView.cs" />
-    <Compile Include="Classes\Presentier.cs" />
+    <Compile Include="Presentiers\SpaceObjectImagePresentier.cs" />
+    <Compile Include="Presentiers\ImdbRatingPresentier.cs" />
     <Compile Include="Ports\MyEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

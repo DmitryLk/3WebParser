@@ -29,12 +29,18 @@ namespace WebParser.UI
             App app = new App();
             MainWindow window = new MainWindow();
 
-            CompositionRoot _compositionRoot = new CompositionRoot(window);
+            try
+            {
+                CompositionRoot _compositionRoot = new CompositionRoot(window);
 
-            _compositionRoot.Register();
-            _compositionRoot.Resolve();
-            _compositionRoot.Release();
-
+                _compositionRoot.Register();
+                _compositionRoot.Resolve();
+                _compositionRoot.Release();
+            }
+            catch (Exception ex)
+            {
+                (new MessageServiceUI()).ShowError(ex.Message);
+            }
 
             app.Run(window);
         }
