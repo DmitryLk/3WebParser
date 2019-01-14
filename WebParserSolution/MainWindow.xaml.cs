@@ -47,6 +47,13 @@ namespace WebParser.UI
             set { lbImdbFilmRating.Content = value; }
         }
 
+        public BitmapImage SpaceObjectImage
+        {
+            set { imgSpaceObjectImage.Source = value;  }
+
+        }
+
+
 
         private void butIMDB_Click(object sender, RoutedEventArgs e)
         {

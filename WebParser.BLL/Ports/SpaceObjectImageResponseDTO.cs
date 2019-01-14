@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Drawing;
+using System.Windows.Media.Imaging;
+
 
 namespace WebParser.App
 {
     public class SpaceObjectImageResponseDTO
     {
-        public Bitmap SpaceObjectImage { get; set; }
+        public BitmapImage SpaceObjectImage { get; set; }
     }
 }

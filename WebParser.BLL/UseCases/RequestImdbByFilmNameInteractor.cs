@@ -6,18 +6,17 @@ using System.Text;
 using System.Threading.Tasks;
 using WebParser.App;
 
-
 namespace WebParser.App
 {
     public class RequestImdbByFilmNameInteractor : IInteractor<FilmNameRequestDTO> 
     {
-        private readonly IPresentier _presentier;
+        private readonly IPresentier<ImdbRatingResponseDTO> _presentier;
         private readonly IValidator<FilmNameRequestDTO> _validator;
         private readonly IRepository _repository;
 
 
 
-        public RequestImdbByFilmNameInteractor(IPresentier presentier, IRepository repository, IValidator<FilmNameRequestDTO> validator)
+        public RequestImdbByFilmNameInteractor(IPresentier<ImdbRatingResponseDTO> presentier, IRepository repository, IValidator<FilmNameRequestDTO> validator)
         {
             _presentier = presentier;
             _validator = validator;

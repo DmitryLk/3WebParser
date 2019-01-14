@@ -49,7 +49,7 @@
                 </cefSharp:ChromiumWebBrowser.RenderTransform>
             </cefSharp:ChromiumWebBrowser>
         </Border>
-        <Image x:Name="imgTestImage" HorizontalAlignment="Left" Height="100" Margin="668,10,0,0" VerticalAlignment="Top" Width="100" />
+        <Image x:Name="imgSpaceObjectImage" HorizontalAlignment="Left" Height="100" Margin="668,10,0,0" VerticalAlignment="Top" Width="100" />
 
     </Grid>
 </Window>

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using WebParser.PresentierController;
 using WebParser.App;
 
+
+
 namespace WebParser.PresentierController
 {
     public class SpaceObjectImagePresentier : IPresentier<SpaceObjectImageResponseDTO>
@@ -24,7 +26,8 @@ namespace WebParser.PresentierController
 
         public void Handle(SpaceObjectImageResponseDTO response)
         {
-           // _view..ImdbFilmRating = response.ImdbRating.ToString("N2");
+            _view.SpaceObjectImage = response.SpaceObjectImage;
+           
         }
 
 

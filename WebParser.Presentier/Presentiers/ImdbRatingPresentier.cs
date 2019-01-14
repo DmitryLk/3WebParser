@@ -8,7 +8,7 @@ using WebParser.App;
 
 namespace WebParser.PresentierController
 {
-    public class ImdbRatingPresentier : IPresentier
+    public class ImdbRatingPresentier : IPresentier<ImdbRatingResponseDTO>
     {
         private readonly IPresentierView _view;
         private readonly IMessageServiceUI _messageServiceUI;

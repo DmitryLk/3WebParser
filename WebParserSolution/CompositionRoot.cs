@@ -39,14 +39,14 @@ namespace WebParser.UI
             builder.RegisterType<SpaceObjectImagePresentier>().WithParameter("view", _window);
 
 
-            builder.Register<IPresentier>((c, p) =>
-                    {
-                        var typeName = p.Named<string>("typeName");
-                        if (typeName == "ImdbRatingByFilmName") return c.Resolve<ImdbRatingPresentier>(new NamedParameter("view", _window));
-                        if (typeName == "SpaceObjectImageByName") return c.Resolve<SpaceObjectImagePresentier>(new NamedParameter("view", _window));
-                        throw new Exception("Type specified is incorrect");
-                    }
-                 );
+            //builder.Register<IPresentier>((c, p) =>
+            //        {
+            //            var typeName = p.Named<string>("typeName");
+            //            if (typeName == "ImdbRatingByFilmName") return c.Resolve<ImdbRatingPresentier>(new NamedParameter("view", _window));
+            //            if (typeName == "SpaceObjectImageByName") return c.Resolve<SpaceObjectImagePresentier>(new NamedParameter("view", _window));
+            //            throw new Exception("Type specified is incorrect");
+            //        }
+            //     );
 
 
             builder.Register<IController>((c, p) =>
@@ -54,13 +54,13 @@ namespace WebParser.UI
                 var typeName = p.Named<string>("typeName");
                 if (typeName == "ImdbRatingByFilmName")
                 {
-                    var requestImdbByFilmNamePresentier = c.Resolve<IPresentier>(new NamedParameter("typeName", typeName));
+                    var requestImdbByFilmNamePresentier = c.Resolve<ImdbRatingPresentier>(new NamedParameter("typeName", typeName));
                     var requestImdbByFilmNameInteractor = c.Resolve<RequestImdbByFilmNameInteractor>(new NamedParameter("presentier", requestImdbByFilmNamePresentier));
                     return c.Resolve<RequestImdbByFilmNameController>(new NamedParameter("interactor", requestImdbByFilmNameInteractor));
                 }
                 if (typeName == "SpaceObjectImageByName")
                 {
-                    var requestSpaceObjectImageByNamePresentier = c.Resolve<IPresentier>(new NamedParameter("typeName", typeName));
+                    var requestSpaceObjectImageByNamePresentier = c.Resolve<SpaceObjectImagePresentier>(new NamedParameter("typeName", typeName));
                     var requestSpaceObjectImageByNameInteractor = c.Resolve<RequestSpaceObjectImageByNameInteractor>(new NamedParameter("presentier", requestSpaceObjectImageByNamePresentier));
                     return c.Resolve<RequestSpaceObjectImageByNameController>(new NamedParameter("interactor", requestSpaceObjectImageByNameInteractor));
                 }

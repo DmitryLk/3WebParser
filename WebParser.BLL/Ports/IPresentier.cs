@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace WebParser.App
 {
-    public interface IPresentier
+    public interface IPresentier<T>
     {
-        void Handle(ImdbRatingResponseDTO response);
+        void Handle(T response);
 
         void ShowMessage(string message);
         void ShowExclamation(string exclamation);
