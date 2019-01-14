@@ -7,14 +7,15 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using WebParser.App;
-
+using System.Drawing;
 
 
 namespace WebParser.Data
 {
     public class Repository : IRepository
     {
-        public float QueryFindImdbByFilmName(string filmName)
+
+        public Bitmap QueryFindSpaceObjectImageByName(string spaceObjectName)
         {
             HtmlWeb web;
             HtmlDocument document;
@@ -23,7 +24,66 @@ namespace WebParser.Data
             web = new HtmlWeb();
             document = web.Load(webs);
 
+
+            var webClient = new WebClient();
+            byte[] imageBytes = webClient.DownloadData(new Uri("//upload.wikimedia.org/wikipedia/commons/thumb/0/09/Voyager_2_picture_of_Oberon.jpg/220px-Voyager_2_picture_of_Oberon.jpg"));
+            MemoryStream stream = new MemoryStream(imageBytes);
+            Image img = Image.FromStream(stream);
+
+            stream.Close();
+
+
+            //BitmapImage image = new BitmapImage();
+            //image.BeginInit();
+            //image.UriSource = new Uri("https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Voyager_2_picture_of_Oberon.jpg/220px-Voyager_2_picture_of_Oberon.jpg");
+            //image.EndInit();
+            //imgTestImage.Source = image;
+
+
+            return GetBitmapImage("https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Voyager_2_picture_of_Oberon.jpg/220px-Voyager_2_picture_of_Oberon.jpg");
+
+        }
+
+        public float QueryFindImdbByFilmName(string filmName)
+        {
             return 5.5F;
+        }
+
+
+        private Bitmap GetBitmapImage(string url)
+        {
+            Bitmap bitmap;
+            using (WebClient webClient = new WebClient())
+            {
+                using (Stream stream = webClient.OpenRead(url))
+                {
+                    bitmap = new Bitmap(stream);
+                    stream.Close();
+                }
+            }
+            return bitmap;
+        }
+
+
+
+
+
+    }
+}
+
+            /*
+
+            private Bitmap GetImage(string url)
+            {
+                WebRequest request = WebRequest.Create(url);
+                WebResponse response = request.GetResponse();
+                Stream responseStream = response.GetResponseStream();
+                Bitmap bmp = new Bitmap(responseStream);
+                responseStream.Dispose();
+                return bmp;
+            }
+
+
 
             //System.Net.WebRequest request = System.Net.WebRequest.Create(url);
 
@@ -39,6 +99,25 @@ namespace WebParser.Data
             //    bitmap.EndInit();
             //    bitmap.Freeze();
             //}
+
+
+            //using (WebClient wc = new WebClient())
+            //{
+            //    using (Stream s = wc.OpenRead("http://hell.com/leaders/cthulhu.jpg"))
+            //    {
+            //        using (Bitmap bmp = new Bitmap(s))
+            //        {
+            //            bmp.Save("C:\\temp\\octopus.jpg");
+            //        }
+            //    }
+            //}
+
+
+            //WebClient wc = new WebClient();
+            //byte[] originalData = wc.DownloadData(url);
+
+            //MemoryStream stream = new MemoryStream(originalData);
+            //Bitmap Bitmap = new Bitmap(stream);
 
 
 
@@ -326,13 +405,7 @@ width="220" height="220" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/
 
 
 
-        */
 
-
-
-        }
-    }
-}
 
 
 /*

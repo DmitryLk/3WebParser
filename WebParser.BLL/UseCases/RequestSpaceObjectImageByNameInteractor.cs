@@ -1,20 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+
+
+
+
+
+
 
 namespace WebParser.App
 {
     public class RequestSpaceObjectImageByNameInteractor : IInteractor<SpaceObjectNameRequestDTO>
     {
-        private readonly IPresentier _presentier;
+        private readonly IPresentier<SpaceObjectImageResponseDTO> _presentier;
         private readonly IValidator<SpaceObjectNameRequestDTO> _validator;
         private readonly IRepository _repository;
 
 
 
-        public RequestSpaceObjectImageByNameInteractor(IPresentier presentier, IRepository repository, IValidator<SpaceObjectNameRequestDTO> validator)
+        public RequestSpaceObjectImageByNameInteractor(IPresentier<SpaceObjectImageResponseDTO> presentier, IRepository repository, IValidator<SpaceObjectNameRequestDTO> validator)
         {
             _presentier = presentier;
             _validator = validator;
@@ -24,8 +33,8 @@ namespace WebParser.App
         public void Execute(SpaceObjectNameRequestDTO requestDTO)
         {
             if (_validator.IsValid(requestDTO) == false) throw new ArgumentException(_validator.GetValidationResultString(requestDTO));
-            var imdb = _repository.QueryFindImdbByFilmName(requestDTO.SpaceObjectName);
-            _presentier.Handle(new ImdbRatingResponseDTO { ImdbRating = imdb });
+            var image = _repository.QueryFindSpaceObjectImageByName(requestDTO.SpaceObjectName);
+            _presentier.Handle(new SpaceObjectImageResponseDTO { SpaceObjectImage = image });
         }
 
     }

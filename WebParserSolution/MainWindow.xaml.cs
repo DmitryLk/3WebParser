@@ -16,6 +16,8 @@ using WebParser.PresentierController;
 
 
 
+
+
 namespace WebParser.UI
 {
     /// <summary>
@@ -48,22 +50,12 @@ namespace WebParser.UI
 
         private void butIMDB_Click(object sender, RoutedEventArgs e)
         {
-            if (ImdbRequestUIEvent!=null) ImdbRequestUIEvent(this, new MyEventArgs() { MyEventParameter = tbFilmName.Text});
-
+            if (ImdbRequestUIEvent!=null) ImdbRequestUIEvent(this, new MyEventArgs() { MyEventParameter = tbRequestString.Text});
         }
 
         private void butSpaceObject_Click(object sender, RoutedEventArgs e)
         {
-
-            if (SpaceObjectImageRequestUIEvent != null) SpaceObjectImageRequestUIEvent(this, new MyEventArgs() { MyEventParameter = tbFilmName.Text });
-
-            BitmapImage image = new BitmapImage();
-            image.BeginInit();
-            //image.UriSource = new Uri("//upload.wikimedia.org/wikipedia/commons/thumb/0/09/Voyager_2_picture_of_Oberon.jpg/220px-Voyager_2_picture_of_Oberon.jpg");
-            image.UriSource = new Uri("https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Voyager_2_picture_of_Oberon.jpg/220px-Voyager_2_picture_of_Oberon.jpg");
-            image.EndInit();
-            imgTestImage.Source = image;
-
+            if (SpaceObjectImageRequestUIEvent != null) SpaceObjectImageRequestUIEvent(this, new MyEventArgs() { MyEventParameter = tbRequestString.Text });
         }
     }
 }

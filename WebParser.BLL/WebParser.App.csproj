@@ -70,6 +70,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -82,6 +83,7 @@
     <Compile Include="Classes\Validator.cs" />
     <Compile Include="Ports\IFilmDBRepository.cs" />
     <Compile Include="Ports\IInteractor.cs" />
+    <Compile Include="Ports\SpaceObjectImageResponseDTO.cs" />
     <Compile Include="Ports\IPresentier.cs" />
     <Compile Include="Ports\IRepository.cs" />
     <Compile Include="Ports\FilmNameRequestDTO.cs" />

@@ -5,12 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 
-
 namespace WebParser.App
 {
-    public interface IRepository
+    public class SpaceObjectImageResponseDTO
     {
-        float QueryFindImdbByFilmName(string filmName);
-        Bitmap QueryFindSpaceObjectImageByName(string spaceObjectName);
+        public Bitmap SpaceObjectImage { get; set; }
     }
 }
