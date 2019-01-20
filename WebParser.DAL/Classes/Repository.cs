@@ -18,17 +18,14 @@ namespace WebParser.Data
 
         public BitmapImage QueryFindSpaceObjectImageByName(string spaceObjectName)
         {
-            Uri spaceObjectImageUri;
-            BitmapImage spaceObjectBitmapImage;
-
             SpaceObjectWikipediaEnParsingTools parsingTools = new SpaceObjectWikipediaEnParsingTools();
             var pageFirstFound = parsingTools.GetHtmlDocumentByUri(new Uri("/w/index.php?search=" + spaceObjectName + "&title=Special%3ASearch&go=Go", UriKind.Relative));
 
 
             var pageSpaceObject = parsingTools.GetSpaceObjectPage(pageFirstFound);
 
-            spaceObjectImageUri = parsingTools.GetUriSpaceObjectImage(pageFirstFound);
-            spaceObjectBitmapImage = new BitmapImage(spaceObjectImageUri) ?? throw new Exception("На удалось прочитать BitmapImage");
+            var spaceObjectImageUri = parsingTools.GetUriSpaceObjectImage(pageSpaceObject);
+            var spaceObjectBitmapImage = new BitmapImage(spaceObjectImageUri) ?? throw new Exception("На удалось прочитать BitmapImage");
 
             return spaceObjectBitmapImage;
         }

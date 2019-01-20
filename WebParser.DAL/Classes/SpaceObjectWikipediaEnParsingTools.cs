@@ -74,7 +74,7 @@ namespace WebParser.Data
         {
             Uri uri = null;
             if (nodeWithHref.Name == "a")
-                uri = new Uri(_baseUrl, nodeWithHref.Attributes["href"].Value);  ;
+                uri = new Uri(_baseUrl, nodeWithHref.Attributes["href"].Value);
 
             return uri;
         }
