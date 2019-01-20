@@ -57,12 +57,12 @@ namespace WebParser.UI
 
         private void butIMDB_Click(object sender, RoutedEventArgs e)
         {
-            if (ImdbRequestUIEvent!=null) ImdbRequestUIEvent(this, new MyEventArgs() { MyEventParameter = tbRequestString.Text});
+            ImdbRequestUIEvent?.Invoke(this, new MyEventArgs() { MyEventParameter = tbRequestString.Text });
         }
 
         private void butSpaceObject_Click(object sender, RoutedEventArgs e)
         {
-            if (SpaceObjectImageRequestUIEvent != null) SpaceObjectImageRequestUIEvent(this, new MyEventArgs() { MyEventParameter = tbRequestString.Text });
+            SpaceObjectImageRequestUIEvent?.Invoke(this, new MyEventArgs() { MyEventParameter = tbRequestString.Text });
         }
     }
 }

@@ -18,39 +18,25 @@ namespace WebParser.Data
 
         public BitmapImage QueryFindSpaceObjectImageByName(string spaceObjectName)
         {
+            Uri spaceObjectImageUri;
             BitmapImage spaceObjectBitmapImage;
 
-            //var htmlStringSpaceObjectImagePage = GetHtmlStringSpaceObjectImagePage(spaceObjectName);
-            //var htmlStringSpaceObjectImage = GetHtmlStringOfSpaceObjectImage(htmlStringSpaceObjectImagePage);
+            SpaceObjectWikipediaEnParsingTools parsingTools = new SpaceObjectWikipediaEnParsingTools();
+            var pageFirstFound = parsingTools.GetHtmlDocumentByUri(new Uri("/w/index.php?search=" + spaceObjectName + "&title=Special%3ASearch&go=Go", UriKind.Relative));
 
-            string htmlStringSpaceObjectImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Voyager_2_picture_of_Oberon.jpg/220px-Voyager_2_picture_of_Oberon.jpg";
 
-            spaceObjectBitmapImage = new BitmapImage(new Uri(htmlStringSpaceObjectImage));
+            var pageSpaceObject = parsingTools.GetSpaceObjectPage(pageFirstFound);
+
+            spaceObjectImageUri = parsingTools.GetUriSpaceObjectImage(pageFirstFound);
+            spaceObjectBitmapImage = new BitmapImage(spaceObjectImageUri) ?? throw new Exception("На удалось прочитать BitmapImage");
 
             return spaceObjectBitmapImage;
-        }
-
-        private object GetHtmlStringOfSpaceObjectImage(object htmlStringSpaceObjectImagePage)
-        {
-            throw new NotImplementedException();
-        }
-
-        private object GetHtmlStringSpaceObjectImagePage(string spaceObjectName)
-        {
-            throw new NotImplementedException();
         }
 
         public float QueryFindImdbByFilmName(string filmName)
         {
             return 5.5F;
         }
-
-
-
-
-
-
-
     }
 }
 
@@ -424,56 +410,10 @@ DownloadImagesFromUrl("http://www.onlinetrade.ru/catalogue/televizori-c181/", @"
 width="220" height="220" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/0/09/Voyager_2_picture_of_Oberon.jpg/330px-Voyager_2_picture_of_Oberon.jpg 1.5x, 
 //upload.wikimedia.org/wikipedia/commons/thumb/0/09/Voyager_2_picture_of_Oberon.jpg/440px-Voyager_2_picture_of_Oberon.jpg 2x" data-file-width="640" data-file-height="640">
 
+*/
 
 
 
 
 
 
-
-/*
-* 
-* text = document.DocumentNode.SelectSingleNode("//div[@data-qa='vacancies-total-found']")?.InnerText ?? "";
-text = Regex.Match(text, @"\d+").Value;
-
-
-web = new HtmlWeb();
-document = web.Load(webs);
-nodes = document.DocumentNode.SelectNodes("//div[@class='vacancy-serp-item ' or @class='vacancy-serp-item  vacancy-serp-item_premium']");
-while (nodes != null)
-{
-    foreach (HtmlNode node in nodes)
-    {
-        rec = new Record();
-        rec.Name = node.SelectSingleNode(".//div[@class='search-item-name']")?.InnerText ?? "";
-        string link = node.SelectSingleNode(".//a[@class='bloko-link HH-LinkModifier']")?.Attributes["href"].Value;
-        rec.Zp = node.SelectSingleNode(".//div[@class='vacancy-serp-item__compensation']")?.InnerText ?? "";
-        rec.Comp = node.SelectSingleNode(".//div[@class='vacancy-serp-item__meta-info']")?.InnerText ?? "";
-        rec.Town = node.SelectSingleNode(".//span[@class='vacancy-serp-item__meta-info']")?.InnerText ?? "";
-        rec.Resp1 = node.SelectSingleNode(".//div[@data-qa='vacancy-serp__vacancy_snippet_responsibility']")?.InnerText ?? "";
-        rec.Req1 = node.SelectSingleNode(".//div[@data-qa='vacancy-serp__vacancy_snippet_requirement']")?.InnerText ?? "";
-        rec.Dat = node.SelectSingleNode(".//span[@class='vacancy-serp-item__publication-date']")?.InnerText ?? "";
-
-        text = node.SelectSingleNode(".//script[@data-name='HH/VacancyResponsePopup/VacancyResponsePopup']")?.Attributes["data-params"]?.Value ?? "0";
-
-        rec.Id = Regex.Match(text, @"\d+").Value;
-
-
-
-        document2 = web.Load(link);
-        rec.Opt = document2.DocumentNode.SelectSingleNode("(//div[@class='bloko-gap bloko-gap_bottom'])[3]")?.InnerText ?? "";
-        root = document2.DocumentNode.SelectSingleNode("//div[@class='g-user-content' or @data-qa='vacancy-description']");
-
-        foreach (HtmlNode node2 in root.DescendantsAndSelf())
-        {
-            if (!node2.HasChildNodes)
-            {
-                text = node2.InnerText;
-                if (!string.IsNullOrWhiteSpace(text))
-                    rec.Desc.AppendLine(text);
-            }
-        }
-
-* 
-* 
-* */

@@ -22,8 +22,7 @@ namespace WebParser.UI
 
         public CompositionRoot(MainWindow window)
         {
-            if (window == null) throw new ArgumentNullException(nameof(window));
-            _window = window;
+            _window = window ?? throw new ArgumentNullException(nameof(window));
         }
 
 

@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Repository.cs" />
+    <Compile Include="Classes\SpaceObjectParsingTools.cs" />
     <Compile Include="Ports\IGetHtmlText.cs" />
     <Compile Include="Ports\IGetImdbRating.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

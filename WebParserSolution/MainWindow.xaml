@@ -7,7 +7,7 @@
         xmlns:cefSharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
 
         mc:Ignorable="d"
-        Title="MainWindow" Height="482" Width="800">
+        Title="MainWindow" Height="482" Width="1190.4">
     <Grid>
         <Button x:Name="butIMDB" Content="IMDB" HorizontalAlignment="Left" Margin="205,33,0,0" VerticalAlignment="Top" Width="75" Click="butIMDB_Click">
             <Button.Background>
@@ -34,22 +34,23 @@
 
 
 
-        <Border BorderBrush="Gray" BorderThickness="1,1" Margin="28,118,25.6,7" RenderTransformOrigin="0.5,0.5">
+        <Border BorderBrush="Gray" BorderThickness="1,1" Margin="28,118,500,7" RenderTransformOrigin="0.5,0.5">
             <!--<cefSharp:ChromiumWebBrowser x:Name="ChromiumWebBrowser2" Grid.Row="0" Address="https://google.com" RenderTransformOrigin="0.5,0.5" >-->
             <cefSharp:ChromiumWebBrowser x:Name="cwbBrowser" Grid.Row="0" Address="https://google.com" Margin="1.2,-0.8,-1.6,0.6"  >
-                    <cefSharp:ChromiumWebBrowser.RenderTransform>
-                        <TransformGroup>
-                            <!--<ScaleTransform ScaleY="0.6" ScaleX="0.6"/>-->
+                <cefSharp:ChromiumWebBrowser.RenderTransform>
+                    <TransformGroup>
+                        <!--<ScaleTransform ScaleY="0.6" ScaleX="0.6"/>-->
 
-                            <SkewTransform/>
-                            <RotateTransform/>
-                            <TranslateTransform/>
-                        </TransformGroup>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
 
                 </cefSharp:ChromiumWebBrowser.RenderTransform>
             </cefSharp:ChromiumWebBrowser>
         </Border>
-        <Image x:Name="imgSpaceObjectImage" HorizontalAlignment="Left" Height="100" Margin="668,10,0,0" VerticalAlignment="Top" Width="100" />
+        <Image x:Name="imgSpaceObjectImage" HorizontalAlignment="Left" Height="405" Margin="706,21,0,0" VerticalAlignment="Top" Width="454" />
+
 
     </Grid>
 </Window>
