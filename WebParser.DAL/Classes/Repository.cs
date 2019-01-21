@@ -16,13 +16,13 @@ namespace WebParser.Data
     public class Repository : IRepository
     {
 
-        public BitmapImage QueryFindSpaceObjectImageByName(string spaceObjectName)
+        public async Task<BitmapImage> QueryFindSpaceObjectImageByName(string spaceObjectName)
         {
             SpaceObjectWikipediaEnParsingTools parsingTools = new SpaceObjectWikipediaEnParsingTools();
-            var pageFirstFound = parsingTools.GetHtmlDocumentByUri(new Uri("/w/index.php?search=" + spaceObjectName + "&title=Special%3ASearch&go=Go", UriKind.Relative));
+            var pageFirstFound = await parsingTools.GetHtmlDocumentByUri(new Uri("/w/index.php?search=" + spaceObjectName + "&title=Special%3ASearch&go=Go", UriKind.Relative));
 
 
-            var pageSpaceObject = parsingTools.GetSpaceObjectPage(pageFirstFound);
+            var pageSpaceObject = await parsingTools.GetSpaceObjectPage(pageFirstFound);
 
             var spaceObjectImageUri = parsingTools.GetUriSpaceObjectImage(pageSpaceObject);
             var spaceObjectBitmapImage = new BitmapImage(spaceObjectImageUri) ?? throw new Exception("На удалось прочитать BitmapImage");
@@ -30,8 +30,9 @@ namespace WebParser.Data
             return spaceObjectBitmapImage;
         }
 
-        public float QueryFindImdbByFilmName(string filmName)
+        public async Task<float> QueryFindImdbByFilmName(string filmName)
         {
+            await Task.Delay(50);
             return 5.5F;
         }
     }

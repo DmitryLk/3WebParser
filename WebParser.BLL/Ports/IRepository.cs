@@ -11,7 +11,7 @@ namespace WebParser.App
 {
     public interface IRepository
     {
-        float QueryFindImdbByFilmName(string filmName);
-        BitmapImage QueryFindSpaceObjectImageByName(string spaceObjectName);
+        Task<float> QueryFindImdbByFilmName(string filmName);
+        Task<BitmapImage> QueryFindSpaceObjectImageByName(string spaceObjectName);
     }
 }

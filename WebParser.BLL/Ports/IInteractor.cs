@@ -8,6 +8,8 @@ namespace WebParser.App
 {
     public interface IInteractor<T>
     {
-        void Execute(T requestDTO);
+        Task Execute(T requestDTO);
     }
+
+
 }

@@ -20,11 +20,11 @@ namespace WebParser.PresentierController
         }
 
 
-        public void Handle(object sender, MyEventArgs e)
+        public async void Handle(object sender, MyEventArgs e)
         {
             try
             {
-                _interactor.Execute(new SpaceObjectNameRequestDTO { SpaceObjectName = e.MyEventParameter });
+                await _interactor.Execute(new SpaceObjectNameRequestDTO { SpaceObjectName = e.MyEventParameter });
             }
             catch (Exception ex)
             {

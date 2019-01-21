@@ -12,7 +12,7 @@ namespace WebParser.Data
     {
         private readonly Uri _baseUrl = new Uri("https://en.wikipedia.org/");
 
-        public HtmlDocument GetHtmlDocumentByUri(Uri uri)
+        public async Task<HtmlDocument> GetHtmlDocumentByUri(Uri uri)
         {
             HtmlWeb web;
             HtmlDocument document;
@@ -20,31 +20,31 @@ namespace WebParser.Data
 
             var searchSpaceObjectPageUri = new Uri(_baseUrl, uri);
 
-            document = web.Load(searchSpaceObjectPageUri);
+            document = await web.LoadFromWebAsync(searchSpaceObjectPageUri.ToString());
             return document;
         }
 
-        public HtmlDocument GetSpaceObjectPage(HtmlDocument checkedDocument)
+        public async Task<HtmlDocument> GetSpaceObjectPage(HtmlDocument checkedDocument)
         {
             if (CheckPage_SpaceObjectImagePage(checkedDocument)) return checkedDocument;
 
-            var disambiguationPage = GetDisambiguationPage(checkedDocument);
+            var disambiguationPage = await GetDisambiguationPage(checkedDocument);
 
             foreach (var uri in ExtractListUriByInnerTextKeywordsList(disambiguationPage, new List<string> { "moon", "planet", "asteroid" }))
             {
-                var resultPage = GetHtmlDocumentByUri(uri);
+                var resultPage = await GetHtmlDocumentByUri(uri);
                 if (CheckPage_SpaceObjectImagePage(resultPage)) return resultPage;
             }
             throw new Exception("Не найдено страниц о космическом объекте в списке");
         }
 
-        public HtmlDocument GetDisambiguationPage(HtmlDocument checkedDocument)
+        public async Task<HtmlDocument> GetDisambiguationPage(HtmlDocument checkedDocument)
         {
             if (CheckPage_DisambiguationPage(checkedDocument)) return checkedDocument;
             if (!CheckPage_LinkToDisambiguationPage(checkedDocument)) throw new Exception("На странице не нашлось перехода на страницу со списком");
 
             var disambiguationLinkList = ExtractListUriByInnerTextKeywordsList(checkedDocument, new List<string> { "(disambiguation)" });
-            return GetHtmlDocumentByUri(disambiguationLinkList.FirstOrDefault());
+            return await GetHtmlDocumentByUri(disambiguationLinkList.FirstOrDefault());
         }
 
         public IEnumerable<Uri> ExtractListUriByInnerTextKeywordsList(HtmlDocument checkedDocument, List<string> keywordsList)
@@ -106,10 +106,6 @@ namespace WebParser.Data
         {
             string link = checkedDocument.DocumentNode.SelectSingleNode("//td[@colspan='2']")?.SelectSingleNode(".//a")?.SelectSingleNode(".//img")?.Attributes["src"]?.Value 
                 ?? throw new Exception("На странице не нашлось изображения космического тела");
-            //var n = checkedDocument.DocumentNode.SelectSingleNode("//td[@colspan='2']");
-            //n = n.SelectSingleNode(".//a");
-            //n = n.SelectSingleNode(".//img");
-            //var link = "https:" + n.Attributes["src"]?.Value;
             return new Uri(_baseUrl, link);
         }
 

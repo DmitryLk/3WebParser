@@ -20,11 +20,11 @@ namespace WebParser.PresentierController
         }
 
 
-        public void Handle(object sender, MyEventArgs e)
+        public async void Handle(object sender, MyEventArgs e)
         {
             try
             {
-                _interactor.Execute(new FilmNameRequestDTO { FilmName = e.MyEventParameter });
+                await _interactor.Execute(new FilmNameRequestDTO { FilmName = e.MyEventParameter });
             }
             catch (Exception ex)
             {

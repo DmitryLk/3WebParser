@@ -23,10 +23,10 @@ namespace WebParser.App
             _repository = repository;
         }
 
-        public void Execute(FilmNameRequestDTO requestDTO)
+        public async Task Execute(FilmNameRequestDTO requestDTO)
         {
             if (_validator.IsValid(requestDTO) ==false) throw new ArgumentException(_validator.GetValidationResultString(requestDTO));
-            var imdb = _repository.QueryFindImdbByFilmName(requestDTO.FilmName);
+            var imdb = await _repository.QueryFindImdbByFilmName(requestDTO.FilmName);
             _presentier.Handle(new ImdbRatingResponseDTO { ImdbRating = imdb });
         }
     }
