@@ -19,6 +19,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebParser.DAL.Test", "WebParser.DAL.Test\WebParser.DAL.Test.csproj", "{40730D08-D3BC-41C7-A99C-323432495F3D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4_Infrastructure", "4_Infrastructure", "{CCC66562-F1F4-4F5A-808B-2D1C6B7FD4F3}"
+	ProjectSection(SolutionItems) = preProject
+		WebParser.Presentier\Ports\IControllerView.cs = WebParser.Presentier\Ports\IControllerView.cs
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3_Adapters", "3_Adapters", "{CFA683EC-7DF6-4549-B3E4-C89DC25FF9A6}"
 EndProject

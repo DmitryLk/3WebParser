@@ -49,7 +49,12 @@ namespace WebParser.UI
 
         public BitmapImage SpaceObjectImage
         {
-            set { imgSpaceObjectImage.Source = value;  }
+            set
+            {
+                PopupWindow popupWindow = new PopupWindow();
+                popupWindow.Show();
+                popupWindow.imgSpaceObjectImage.Source = value;
+            }
 
         }
 
@@ -63,6 +68,8 @@ namespace WebParser.UI
         private void butSpaceObject_Click(object sender, RoutedEventArgs e)
         {
             SpaceObjectImageRequestUIEvent?.Invoke(this, new MyEventArgs() { MyEventParameter = tbRequestString.Text });
+
+            
         }
     }
 }
