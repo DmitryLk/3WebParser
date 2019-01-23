@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace WebParser.Data
 {
-    class SpaceObjectWikipediaEnParsingTools
+    class SpaceObjectWikipediaEnParsingToolKit
     {
         private readonly Uri _baseUrl = new Uri("https://en.wikipedia.org/");
 

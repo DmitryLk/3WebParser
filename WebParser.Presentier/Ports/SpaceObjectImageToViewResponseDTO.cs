@@ -3,18 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using System.Windows.Media.Imaging;
-
 
 
 namespace WebParser.PresentierController
 {
-    public interface IPresentierView
+    public class SpaceObjectImageToViewResponseDTO
     {
-        
-        string ImdbFilmRating { set; }
-        SpaceObjectImageToViewResponseDTO SpaceObjectImageResponse { set; }
-
+       
+        public string SpaceObjectName { get; set; }
+        public BitmapImage SpaceObjectImage { get; set; }
     }
 }

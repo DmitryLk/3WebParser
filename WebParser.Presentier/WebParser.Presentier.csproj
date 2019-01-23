@@ -85,6 +85,7 @@
     <Compile Include="Ports\IMessageServiceUI.cs" />
     <Compile Include="Ports\IControllerView.cs" />
     <Compile Include="Ports\IPresentierView.cs" />
+    <Compile Include="Ports\SpaceObjectImageToViewResponseDTO.cs" />
     <Compile Include="Presentiers\SpaceObjectImagePresentier.cs" />
     <Compile Include="Presentiers\ImdbRatingPresentier.cs" />
     <Compile Include="Ports\MyEventArgs.cs" />

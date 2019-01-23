@@ -13,21 +13,23 @@ using System.Windows.Media.Imaging;
 
 namespace WebParser.Data
 {
-    public class Repository : IRepository
+    public class WebRepository : IRepository
     {
 
-        public async Task<BitmapImage> QueryFindSpaceObjectImageByName(string spaceObjectName)
+        public async Task<SpaceObjectImageResponseDTO> QueryFindSpaceObjectImageByName(string spaceObjectName)
         {
-            SpaceObjectWikipediaEnParsingTools parsingTools = new SpaceObjectWikipediaEnParsingTools();
-            var pageFirstFound = await parsingTools.GetHtmlDocumentByUri(new Uri("/w/index.php?search=" + spaceObjectName + "&title=Special%3ASearch&go=Go", UriKind.Relative));
+            SpaceObjectWikipediaEnParsingToolKit parsingToolKit = new SpaceObjectWikipediaEnParsingToolKit();
+            var pageFirstFound = await parsingToolKit.GetHtmlDocumentByUri(new Uri("/w/index.php?search=" + spaceObjectName + "&title=Special%3ASearch&go=Go", UriKind.Relative));
 
 
-            var pageSpaceObject = await parsingTools.GetSpaceObjectPage(pageFirstFound);
+            var pageSpaceObject = await parsingToolKit.GetSpaceObjectPage(pageFirstFound);
 
-            var spaceObjectImageUri = parsingTools.GetUriSpaceObjectImage(pageSpaceObject);
+            var spaceObjectImageUri = parsingToolKit.GetUriSpaceObjectImage(pageSpaceObject);
             var spaceObjectBitmapImage = new BitmapImage(spaceObjectImageUri) ?? throw new Exception("На удалось прочитать BitmapImage");
 
-            return spaceObjectBitmapImage;
+            return new SpaceObjectImageResponseDTO
+            { SpaceObjectImageUri = spaceObjectImageUri, SpaceObjectName = spaceObjectName, SpaceObjectImage = spaceObjectBitmapImage };
+            
         }
 
         public async Task<float> QueryFindImdbByFilmName(string filmName)

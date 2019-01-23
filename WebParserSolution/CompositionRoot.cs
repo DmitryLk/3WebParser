@@ -70,7 +70,7 @@ namespace WebParser.UI
 
 
 
-            builder.RegisterType<Repository>().As<IRepository>();
+            builder.RegisterType<WebRepository>().As<IRepository>();
             builder.RegisterGeneric(typeof(Validator<>)).As(typeof(IValidator<>));
             builder.RegisterType<RequestImdbByFilmNameInteractor>();
             builder.RegisterType<RequestSpaceObjectImageByNameInteractor>();
