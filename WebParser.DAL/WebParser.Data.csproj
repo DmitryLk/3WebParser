@@ -81,8 +81,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\Repository.cs" />
-    <Compile Include="Classes\SpaceObjectWikipediaEnParsingTools.cs" />
+    <Compile Include="Classes\WebRepository.cs" />
+    <Compile Include="Classes\SpaceObjectWikipediaEnParsingToolKit.cs" />
     <Compile Include="Ports\IGetHtmlText.cs" />
     <Compile Include="Ports\IGetImdbRating.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

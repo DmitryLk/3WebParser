@@ -10,6 +10,9 @@ namespace WebParser.App
 {
     public class SpaceObjectImageResponseDTO
     {
+        //public Uri PageSpaceObjectUri { get; set; }
+        public Uri SpaceObjectImageUri { get; set; }
+        public string SpaceObjectName { get; set; }
         public BitmapImage SpaceObjectImage { get; set; }
     }
 }

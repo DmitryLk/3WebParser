@@ -33,8 +33,8 @@ namespace WebParser.App
         public async Task Execute(SpaceObjectNameRequestDTO requestDTO)
         {
             if (_validator.IsValid(requestDTO) == false) throw new ArgumentException(_validator.GetValidationResultString(requestDTO));
-            var image = await _repository.QueryFindSpaceObjectImageByName(requestDTO.SpaceObjectName);
-            _presentier.Handle(new SpaceObjectImageResponseDTO { SpaceObjectImage = image });
+            var imageDTO = await _repository.QueryFindSpaceObjectImageByName(requestDTO.SpaceObjectName);
+            _presentier.Handle(imageDTO);
         }
 
     }

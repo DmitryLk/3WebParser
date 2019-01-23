@@ -47,15 +47,15 @@ namespace WebParser.UI
             set { lbImdbFilmRating.Content = value; }
         }
 
-        public BitmapImage SpaceObjectImage
+        public SpaceObjectImageToViewResponseDTO SpaceObjectImageResponse
         {
             set
             {
                 PopupWindow popupWindow = new PopupWindow();
                 popupWindow.Show();
-                popupWindow.imgSpaceObjectImage.Source = value;
+                popupWindow.Title = value.SpaceObjectName.ToUpper();
+                popupWindow.imgSpaceObjectImage.Source = value.SpaceObjectImage;
             }
-
         }
 
 
