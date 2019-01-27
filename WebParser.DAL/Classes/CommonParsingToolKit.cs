@@ -14,61 +14,33 @@ using CefSharp.OffScreen;
 using System.Threading;
 using CefSharp.Internals;
 
-namespace WebParser.DAL.Classes
+namespace WebParser.Data
 {
     class CommonParsingToolKit
     {
+        protected readonly Uri _baseUri;
+        protected readonly IHtmlByUriGetter _htmlGetter;
+
+
+        public CommonParsingToolKit(string baseUri, IHtmlByUriGetter htmlGetter)
+        {
+            _baseUri = new Uri(baseUri);
+            _htmlGetter = htmlGetter;
+        }
 
         public async Task<HtmlDocument> GetHtmlDocumentByUri(Uri uri)
         {
-            HtmlWeb web;
-            HtmlDocument document;
-            web = new HtmlWeb();
-            var searchSpaceObjectPageUri = new Uri(_baseUrl, uri);
-            document = await web.LoadFromWebAsync(searchSpaceObjectPageUri.ToString());
+            var searchPageUri = new Uri(_baseUri, uri);
+            var document = await _htmlGetter.GetHtml(searchPageUri.ToString());
             return document;
         }
 
 
-        public static Task LoadPageAsync(IWebBrowser browser, string address = null)
-        {
-            var tcs = new TaskCompletionSource<bool>();
-            EventHandler<LoadingStateChangedEventArgs> handler = null;
-            handler = (sender, args) =>
-            {
-                if (!args.IsLoading)
-                {
-                    browser.LoadingStateChanged -= handler;
-                    tcs.TrySetResultAsync(true);
-                }
-            };
-            browser.LoadingStateChanged += handler;
-            if (!string.IsNullOrEmpty(address))
-            {
-                browser.Load(address);
-            }
-            return tcs.Task;
-        }
 
-        public async Task<HtmlDocument> GetHtmlDocumentChromiumByUri(Uri uri)
+        public async Task<HtmlDocument> GetSearchResultsPage(HtmlDocument checkedDocument)
         {
-            string html;
-            var searchUri = new Uri(_baseUrl, uri);
-            //CefSettings settings = new CefSettings();
-            //settings.CefCommandLineArgs.Add("proxy-server", "37.75.9.131:8080");
-            //settings.UserAgent = "Mozila 5.0";
-            //Cef.Initialize(settings);
-            using (var chromium = new ChromiumWebBrowser(string.Empty))
-            {
-                Thread.Sleep(1000);
-                await LoadPageAsync(chromium, searchUri.ToString());
-                html = await chromium.GetSourceAsync();
-            }
-            //Cef.Shutdown();
-
-            HtmlDocument document = new HtmlDocument();
-            document.LoadHtml(html);
-            return document;
+            var disambiguationLinkList = ExtractListUriByInnerTextKeywordsList(checkedDocument, new List<string> { "(disambiguation)" });
+            return await GetHtmlDocumentByUri(disambiguationLinkList.FirstOrDefault());
         }
 
         public IEnumerable<Uri> ExtractListUriByInnerTextKeywordsList(HtmlDocument checkedDocument, List<string> keywordsList)
@@ -88,8 +60,61 @@ namespace WebParser.DAL.Classes
                     }
             }
         }
-      
 
+        public Uri ExtractLinkFromNode(HtmlNode nodeWithHref)
+        {
+            Uri uri = null;
+            if (nodeWithHref.Name == "a")
+                uri = new Uri(_baseUri, nodeWithHref.Attributes["href"].Value);
+
+            return uri;
+        }
+
+
+        public HtmlNodeCollection FindNodesByTagAndInnerText(HtmlDocument checkedDocument, string textContains, string tag = "*")
+        {
+            var nodesFound = checkedDocument.DocumentNode.SelectNodes("//" + tag + "[text()[contains(., '" + textContains + "')]]");
+            return nodesFound;
+        }
+
+        //===================================================================================
+
+        public int CountTagsOnPage(HtmlDocument document, string tag)
+        {
+            return document.DocumentNode.SelectNodes("//" + tag).Count;
+        }
+
+        public List<string> GetAllLinksFromDocument(HtmlDocument document)
+        {
+            List<string> links = new List<string>();
+            string hrefValue;
+
+            foreach (HtmlNode link in document.DocumentNode.SelectNodes("//a[@href]"))
+            {
+                hrefValue = link.Attributes["href"].Value;
+                links.Add(hrefValue);
+            }
+
+            return links;
+        }
+
+        private Boolean CheckHtmlNodeWithAttributeValueExists(HtmlDocument checkedDocument, string attribute, string valueContains)
+        {
+            return checkedDocument.DocumentNode.SelectSingleNode("//a[contains(@" + attribute + ", '" + valueContains + "')]") != null;
+        }
+
+        private string GetAttributeValueContainsString(HtmlDocument checkedDocument, string attribute, string valueContains)
+        {
+            string link = checkedDocument.DocumentNode.SelectSingleNode("//a[contains(@" + attribute + ", '" + valueContains + "')]")?.Attributes["href"].Value;
+            return link;
+        }
+
+        private string GetAttributeValueContainsInnerText(HtmlDocument checkedDocument, string attribute, string valueContains)
+        {
+            HtmlNode nodeFound = checkedDocument.DocumentNode.SelectSingleNode("//*[text()[contains(., '" + valueContains + "')]]");
+            string link = nodeFound?.Attributes["href"].Value;
+            return link;
+        }
 
     }
 }
@@ -114,6 +139,14 @@ namespace WebParser.DAL.Classes
 //        });
 //    }
 //}
+
+//private readonly ChromiumWebBrowser browser = new ChromiumWebBrowser(string.Empty)
+
+//public WebRepository(ChromiumWebBrowser browser)
+//{
+//    this.browser = browser ?? throw new ArgumentNullException(nameof(browser));
+//}
+
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //using (browser = new ChromiumWebBrowser("https://www.google.com")

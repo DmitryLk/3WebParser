@@ -88,6 +88,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\CommonParsingToolKit.cs" />
+    <Compile Include="Classes\HtmlByUriChromiumGetter.cs" />
+    <Compile Include="Classes\HtmlByUriHtmlWebGetter.cs" />
+    <Compile Include="Interfaces\IHtmlByUriGetter.cs" />
     <Compile Include="Classes\MovieInfoKinopoiskParsingToolKit.cs" />
     <Compile Include="Classes\WebRepository.cs" />
     <Compile Include="Classes\SpaceObjectWikipediaEnParsingToolKit.cs" />

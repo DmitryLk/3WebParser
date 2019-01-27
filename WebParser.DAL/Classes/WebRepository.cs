@@ -15,23 +15,16 @@ namespace WebParser.Data
 {
     public class WebRepository : IRepository
     {
-        //private readonly ChromiumWebBrowser browser = new ChromiumWebBrowser(string.Empty)
-        
-        //public WebRepository(ChromiumWebBrowser browser)
-        //{
-        //    this.browser = browser ?? throw new ArgumentNullException(nameof(browser));
-        //}
 
         public async Task<SpaceObjectImageResponseDTO> QueryFindSpaceObjectImageByName(string spaceObjectName)
         {
-            var parsingToolKit = new SpaceObjectWikipediaEnParsingToolKit();
             // 1. По поисковому запросу пользователя через поиск на сайте находится первая страница
             // 2. Определяется тип страницы (список вариантов найденного, целевая страница, ничего не найдено(по запросу ничего не найдено))
             // 3. Пользователю выводится список подходящих вариантов под его запрос
             // x. Из найденной страницы извлекается целевая информация
 
+            var parsingToolKit = new SpaceObjectWikipediaEnParsingToolKit(new HtmlByUriHtmlWebGetter());
             var firstFoundPage = await parsingToolKit.GetHtmlDocumentByUri(new Uri("/w/index.php?search=" + spaceObjectName + "&title=Special%3ASearch&go=Go", UriKind.Relative));
-
             var targetPage = await parsingToolKit.GetTargetPage(firstFoundPage);
             
             var spaceObjectImageUri = parsingToolKit.GetUriSpaceObjectImage(targetPage);
@@ -44,21 +37,11 @@ namespace WebParser.Data
 
         public async Task<MovieInfoResponseDTO> QueryFindImdbByFilmName(string filmName)
         {
-            var parsingToolKit = new MovieInfoKinopoiskParsingToolKit();
-          
-
-
+            var parsingToolKit = new MovieInfoKinopoiskParsingToolKit(new HtmlByUriChromiumGetter());
             var firstFoundPage = await parsingToolKit.GetHtmlDocumentByUri(new Uri("/index.php?kp_query=" + filmName + "&what=", UriKind.Relative));
-
             var targetPage = await parsingToolKit.GetTargetPage(firstFoundPage);
+            
 
-            var spaceObjectImageUri = parsingToolKit.GetUriSpaceObjectImage(targetPage);
-            var spaceObjectBitmapImage = new BitmapImage(spaceObjectImageUri) ?? throw new Exception("На удалось прочитать BitmapImage");
-
-            //return new MovieInfoResponseDTO
-            //{ SpaceObjectImageUri = spaceObjectImageUri, SpaceObjectName = spaceObjectName, SpaceObjectImage = spaceObjectBitmapImage };
-
-            await Task.Delay(50);
             MovieInfoResponseDTO v = new MovieInfoResponseDTO();
             return v;
 

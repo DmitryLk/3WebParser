@@ -11,22 +11,20 @@ using CefSharp.Internals;
 
 namespace WebParser.Data
 {
-    class MovieInfoKinopoiskParsingToolKit
+    class MovieInfoKinopoiskParsingToolKit : CommonParsingToolKit
     {
-        private readonly Uri _baseUrl = new Uri("https://www.kinopoisk.ru/");
+        
 
-      
-
-      
-
+        public MovieInfoKinopoiskParsingToolKit(IHtmlByUriGetter htmlGetter) : base("https://www.kinopoisk.ru/", htmlGetter) {}
 
         public async Task<HtmlDocument> GetTargetPage(HtmlDocument checkedDocument)
         {
-            if (CheckPage_TargetPage(checkedDocument)) return checkedDocument;
-            if (CheckPage_NotFoundPage(checkedDocument)) throw new Exception("По данному запросу ничего не найдено");
-
-
-            var searchResultsPage = await GetSearchResultsPage(checkedDocument);
+            HtmlDocument searchResultsPage;
+            if (IsTargetPage(checkedDocument) == true) return checkedDocument;
+            else if (IsSearchResultsPage(checkedDocument) == true) searchResultsPage = checkedDocument;
+            else if (IsLinkToSearchResultsPage(checkedDocument)) searchResultsPage = await GetSearchResultsPage(checkedDocument);
+            else if (IsResultNotFoundPage(checkedDocument)) throw new Exception("По запросу ничего не найдено"); 
+            else throw new Exception("Найдена незнакомая страница");
 
             var searchedNodes = await FoundAllSearchResultsNodes(searchResultsPage);
 
@@ -38,21 +36,6 @@ namespace WebParser.Data
             }
             throw new Exception("Не найдено страниц о космическом объекте в списке");
         }
-
-        public async Task<HtmlDocument> GetSearchResultsPage(HtmlDocument checkedDocument)
-        {
-            if (CheckPage_SearchResultsPage(checkedDocument)) return checkedDocument;
-            if (!CheckPage_LinkToSearchResultsPage(checkedDocument)) throw new Exception("На странице не нашлось перехода на страницу с поиском");
-
-            var disambiguationLinkList = ExtractListUriByInnerTextKeywordsList(checkedDocument, new List<string> { "(disambiguation)" });
-            return await GetHtmlDocumentByUri(disambiguationLinkList.FirstOrDefault());
-        }
-
-
-
-       
-
-   
 
 
 
@@ -100,36 +83,10 @@ namespace WebParser.Data
             return htmlNodes;
         }
 
-
-
-
-        public Uri ExtractLinkFromNode(HtmlNode nodeWithHref)
-        {
-            Uri uri = null;
-            if (nodeWithHref.Name == "a")
-                uri = new Uri(_baseUrl, nodeWithHref.Attributes["href"].Value);
-
-            return uri;
-        }
-
-
-        public HtmlNodeCollection FindNodesByTagAndInnerText(HtmlDocument checkedDocument, string textContains, string tag = "*")
-        {
-            var nodesFound = checkedDocument.DocumentNode.SelectNodes("//" + tag + "[text()[contains(., '" + textContains + "')]]");
-            return nodesFound;
-        }
-
-        public Uri GetUriSpaceObjectImage(HtmlDocument checkedDocument)
-        {
-            string link = checkedDocument.DocumentNode.SelectSingleNode("//td[@colspan='2']")?.SelectSingleNode(".//a")?.SelectSingleNode(".//img")?.Attributes["src"]?.Value
-                ?? throw new Exception("На странице не нашлось изображения космического тела");
-            return new Uri(_baseUrl, link);
-        }
-
         //---------------------------------------------------------------------------------------------
 
 
-        public bool CheckPage_TargetPage(HtmlDocument checkedDocument)
+        public bool IsTargetPage(HtmlDocument checkedDocument)
         {
             int i = 0;
             var keywordsList = new List<string> { "Eccentricity", "Volume", "Mass", "Orbital", "Temperature", "Semi-major", "anomaly" };
@@ -142,63 +99,22 @@ namespace WebParser.Data
         }
 
 
-        public bool CheckPage_SearchResultsPage(HtmlDocument checkedDocument)
+        public bool IsSearchResultsPage(HtmlDocument checkedDocument)
         {
             return FindNodesByTagAndInnerText(checkedDocument, "Скорее всего, вы ищете:") != null;
         }
 
-        public bool CheckPage_LinkToSearchResultsPage(HtmlDocument checkedDocument)
+        public bool IsLinkToSearchResultsPage(HtmlDocument checkedDocument)
         {
             return FindNodesByTagAndInnerText(checkedDocument, "(disambiguation)") != null;
         }
 
-        public bool CheckPage_NotFoundPage(HtmlDocument checkedDocument)
+        public bool IsResultNotFoundPage(HtmlDocument checkedDocument)
         {
             return FindNodesByTagAndInnerText(checkedDocument, "К сожалению, по вашему запросу ничего не найдено...") != null;
         }
 
-
-        //===================================================================================
-
-
-
-        public int CountTagsOnPage(HtmlDocument document, string tag)
-        {
-            return document.DocumentNode.SelectNodes("//" + tag).Count;
-        }
-
-        public List<string> GetAllLinksFromDocument(HtmlDocument document)
-        {
-            List<string> links = new List<string>();
-            string hrefValue;
-
-            foreach (HtmlNode link in document.DocumentNode.SelectNodes("//a[@href]"))
-            {
-                hrefValue = link.Attributes["href"].Value;
-                links.Add(hrefValue);
-            }
-
-            return links;
-        }
-
-        private Boolean CheckHtmlNodeWithAttributeValueExists(HtmlDocument checkedDocument, string attribute, string valueContains)
-        {
-            return checkedDocument.DocumentNode.SelectSingleNode("//a[contains(@" + attribute + ", '" + valueContains + "')]") != null;
-        }
-
-        private string GetAttributeValueContainsString(HtmlDocument checkedDocument, string attribute, string valueContains)
-        {
-            string link = checkedDocument.DocumentNode.SelectSingleNode("//a[contains(@" + attribute + ", '" + valueContains + "')]")?.Attributes["href"].Value;
-            return link;
-        }
-
-        private string GetAttributeValueContainsInnerText(HtmlDocument checkedDocument, string attribute, string valueContains)
-        {
-            HtmlNode nodeFound = checkedDocument.DocumentNode.SelectSingleNode("//*[text()[contains(., '" + valueContains + "')]]");
-            string link = nodeFound?.Attributes["href"].Value;
-            return link;
-        }
-
+        //--------------------------------------------------------------------------------------
 
     }
 }
