@@ -8,7 +8,7 @@ using WebParser.App;
 
 namespace WebParser.PresentierController
 {
-    public class ImdbRatingPresentier : IPresentier<ImdbRatingResponseDTO>
+    public class ImdbRatingPresentier : IPresentier<MovieInfoResponseDTO>
     {
         private readonly IPresentierView _view;
         private readonly IMessageServiceUI _messageServiceUI;
@@ -22,7 +22,7 @@ namespace WebParser.PresentierController
 
     
 
-        public void Handle(ImdbRatingResponseDTO response)
+        public void Handle(MovieInfoResponseDTO response)
         {
             _view.ImdbFilmRating = response.ImdbRating.ToString("N2");
         }

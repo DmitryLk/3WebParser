@@ -7,13 +7,13 @@
         xmlns:cefSharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
 
         mc:Ignorable="d"
-        Title="MainWindow" Height="482" Width="824.8">
+        Title="MainWindow" Height="482" Width="1066.4">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition Width="0*"/>
         </Grid.ColumnDefinitions>
-        <Button x:Name="butIMDB" Content="IMDB" HorizontalAlignment="Left" Margin="147,9,0,0" VerticalAlignment="Top" Width="75" Click="butIMDB_Click" Height="19">
+        <Button x:Name="butIMDB" Content="IMDB" HorizontalAlignment="Left" Margin="299,9,0,0" VerticalAlignment="Top" Width="75" Click="butIMDB_Click" Height="19">
             <Button.Background>
                 <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
                     <GradientStop Color="#FFBB5656" Offset="1"/>
@@ -22,7 +22,7 @@
             </Button.Background>
         </Button>
 
-        <Button x:Name="butSpaceObject" Content="SpaceObject" HorizontalAlignment="Left" Margin="243,9,0,0" VerticalAlignment="Top" Width="75" Click="butSpaceObject_Click" Height="19">
+        <Button x:Name="butSpaceObject" Content="SpaceObject" HorizontalAlignment="Left" Margin="395,9,0,0" VerticalAlignment="Top" Width="75" Click="butSpaceObject_Click" Height="19">
             <Button.Background>
                 <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
                     <GradientStop Color="#FFBB5656" Offset="1"/>
@@ -33,12 +33,12 @@
 
 
 
-        <TextBox x:Name="tbRequestString" HorizontalAlignment="Left" Height="23" Margin="20,9,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
-        <Label x:Name="lbImdbFilmRating" Content="Label" HorizontalAlignment="Left" Margin="336,7,0,0" VerticalAlignment="Top" Width="121" Height="26"/>
+        <TextBox x:Name="tbRequestString" HorizontalAlignment="Left" Height="23" Margin="172,9,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="lbImdbFilmRating" Content="Label" HorizontalAlignment="Left" Margin="488,7,0,0" VerticalAlignment="Top" Width="121" Height="26"/>
 
 
 
-        <Border BorderBrush="Gray" BorderThickness="1,1" Margin="20,50,19.4,20" RenderTransformOrigin="0.5,0.5">
+        <Border BorderBrush="Gray" BorderThickness="1,1" Margin="20,100,20,30" RenderTransformOrigin="0.5,0.5">
             <!--<cefSharp:ChromiumWebBrowser x:Name="ChromiumWebBrowser2" Grid.Row="0" Address="https://google.com" RenderTransformOrigin="0.5,0.5" >-->
             <cefSharp:ChromiumWebBrowser x:Name="cwbBrowser" Grid.Row="0" Address="https://google.com" Margin="0,0,0,0"  >
                 <cefSharp:ChromiumWebBrowser.RenderTransform>
@@ -53,6 +53,24 @@
                 </cefSharp:ChromiumWebBrowser.RenderTransform>
             </cefSharp:ChromiumWebBrowser>
         </Border>
+
+        <StatusBar HorizontalAlignment="Left" Height="25" Margin="0,427,0,0" VerticalAlignment="Top" Width="1060">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid Margin="0,0,0,-18">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <TextBlock>Текст слева</TextBlock>
+            <StatusBarItem Grid.Column="1">
+                <TextBlock>Текст справа</TextBlock>
+            </StatusBarItem>
+        </StatusBar>
+        <ListBox HorizontalAlignment="Left" Height="88" Margin="20,7,0,0" VerticalAlignment="Top" Width="147"/>
 
 
     </Grid>

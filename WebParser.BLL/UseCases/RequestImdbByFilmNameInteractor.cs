@@ -10,13 +10,13 @@ namespace WebParser.App
 {
     public class RequestImdbByFilmNameInteractor : IInteractor<FilmNameRequestDTO> 
     {
-        private readonly IPresentier<ImdbRatingResponseDTO> _presentier;
+        private readonly IPresentier<MovieInfoResponseDTO> _presentier;
         private readonly IValidator<FilmNameRequestDTO> _validator;
         private readonly IRepository _repository;
 
 
 
-        public RequestImdbByFilmNameInteractor(IPresentier<ImdbRatingResponseDTO> presentier, IRepository repository, IValidator<FilmNameRequestDTO> validator)
+        public RequestImdbByFilmNameInteractor(IPresentier<MovieInfoResponseDTO> presentier, IRepository repository, IValidator<FilmNameRequestDTO> validator)
         {
             _presentier = presentier;
             _validator = validator;
@@ -27,7 +27,7 @@ namespace WebParser.App
         {
             if (_validator.IsValid(requestDTO) ==false) throw new ArgumentException(_validator.GetValidationResultString(requestDTO));
             var imdb = await _repository.QueryFindImdbByFilmName(requestDTO.FilmName);
-            _presentier.Handle(new ImdbRatingResponseDTO { ImdbRating = imdb });
+            _presentier.Handle(new MovieInfoResponseDTO { });
         }
     }
 }

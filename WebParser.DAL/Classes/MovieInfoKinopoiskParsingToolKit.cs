@@ -4,26 +4,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using CefSharp;
+using CefSharp.OffScreen;
+using System.Threading;
+using CefSharp.Internals;
 
 namespace WebParser.Data
 {
-    class SpaceObjectWikipediaEnParsingToolKit
+    class MovieInfoKinopoiskParsingToolKit
     {
-        private readonly Uri _baseUrl = new Uri("https://en.wikipedia.org/");
+        private readonly Uri _baseUrl = new Uri("https://www.kinopoisk.ru/");
 
-     
+      
+
+      
+
 
         public async Task<HtmlDocument> GetTargetPage(HtmlDocument checkedDocument)
         {
             if (CheckPage_TargetPage(checkedDocument)) return checkedDocument;
+            if (CheckPage_NotFoundPage(checkedDocument)) throw new Exception("По данному запросу ничего не найдено");
+
 
             var searchResultsPage = await GetSearchResultsPage(checkedDocument);
 
-            foreach (var uri in ExtractListUriByInnerTextKeywordsList(searchResultsPage, new List<string> { "moon", "planet", "asteroid", "comet" }))
+            var searchedNodes = await FoundAllSearchResultsNodes(searchResultsPage);
+
+            if (searchedNodes!=null)
+            foreach (var node in searchedNodes)
             {
-                var resultPage = await GetHtmlDocumentByUri(uri);
-                if (CheckPage_TargetPage(resultPage)) return resultPage;
+                //var resultPage = await GetHtmlDocumentByUri(uri);
+                //if (CheckPage_TargetPage(resultPage)) return resultPage;
             }
             throw new Exception("Не найдено страниц о космическом объекте в списке");
         }
@@ -31,17 +42,66 @@ namespace WebParser.Data
         public async Task<HtmlDocument> GetSearchResultsPage(HtmlDocument checkedDocument)
         {
             if (CheckPage_SearchResultsPage(checkedDocument)) return checkedDocument;
-            if (!CheckPage_LinkToSearchResultsPage(checkedDocument)) throw new Exception("На странице не нашлось перехода на страницу со списком");
+            if (!CheckPage_LinkToSearchResultsPage(checkedDocument)) throw new Exception("На странице не нашлось перехода на страницу с поиском");
 
             var disambiguationLinkList = ExtractListUriByInnerTextKeywordsList(checkedDocument, new List<string> { "(disambiguation)" });
             return await GetHtmlDocumentByUri(disambiguationLinkList.FirstOrDefault());
         }
 
-     
 
-     
 
-    
+       
+
+   
+
+
+
+        public async Task<IEnumerable<HtmlNode>> FoundAllSearchResultsNodes(HtmlDocument checkedDocument)
+        {
+            Uri uri;
+            var htmlNodes = new List<HtmlNode>();
+
+            var nodeMostWanted = checkedDocument.DocumentNode.SelectSingleNode("//div[@class='element most_wanted']") ?? throw new Exception("Не найден раздел \"Скорее всего, вы ищете:\"");
+            htmlNodes.Add(nodeMostWanted);
+
+
+            uri = ExtractListUriByInnerTextKeywordsList(checkedDocument, new List<string> { "Похожие результаты" }).First();
+
+
+            if (uri == null)    // раздела Похожие результаты нет - надо найти ноды element на этой же странице
+            {
+                var nodes = checkedDocument.DocumentNode.SelectNodes("//div[@class='element']");
+                foreach (var node in nodes)
+                {
+                    htmlNodes.Add(node);
+                }
+            }
+            else // раздел Похожие результаты есть
+            {
+                do
+                {
+                    var documentSearchPage = await GetHtmlDocumentByUri(uri);
+
+                    var nodes = documentSearchPage.DocumentNode.SelectNodes("//div[contains(@class,'element')]") ?? throw new Exception("Не найдены элементы в разделе \"Похожие результаты\"");
+
+                    foreach (var node in nodes)
+                    {
+                        htmlNodes.Add(node);
+                    }
+
+                    nodes = documentSearchPage.DocumentNode.SelectNodes("//a[text()='&raquo;' or text()='»']");
+                    if (nodes == null) break;
+                    uri = ExtractLinkFromNode(nodes.First());
+                }
+                while (true);
+
+
+            }
+            return htmlNodes;
+        }
+
+
+
 
         public Uri ExtractLinkFromNode(HtmlNode nodeWithHref)
         {
@@ -52,12 +112,12 @@ namespace WebParser.Data
             return uri;
         }
 
+
         public HtmlNodeCollection FindNodesByTagAndInnerText(HtmlDocument checkedDocument, string textContains, string tag = "*")
         {
             var nodesFound = checkedDocument.DocumentNode.SelectNodes("//" + tag + "[text()[contains(., '" + textContains + "')]]");
             return nodesFound;
         }
-
 
         public Uri GetUriSpaceObjectImage(HtmlDocument checkedDocument)
         {
@@ -66,7 +126,8 @@ namespace WebParser.Data
             return new Uri(_baseUrl, link);
         }
 
-        //--------------------------------------------------------------------------------------
+        //---------------------------------------------------------------------------------------------
+
 
         public bool CheckPage_TargetPage(HtmlDocument checkedDocument)
         {
@@ -80,9 +141,10 @@ namespace WebParser.Data
             return i >= 3;
         }
 
+
         public bool CheckPage_SearchResultsPage(HtmlDocument checkedDocument)
         {
-            return FindNodesByTagAndInnerText(checkedDocument, "Disambiguation pages") != null;
+            return FindNodesByTagAndInnerText(checkedDocument, "Скорее всего, вы ищете:") != null;
         }
 
         public bool CheckPage_LinkToSearchResultsPage(HtmlDocument checkedDocument)
@@ -95,7 +157,10 @@ namespace WebParser.Data
             return FindNodesByTagAndInnerText(checkedDocument, "К сожалению, по вашему запросу ничего не найдено...") != null;
         }
 
+
         //===================================================================================
+
+
 
         public int CountTagsOnPage(HtmlDocument document, string tag)
         {
@@ -137,5 +202,3 @@ namespace WebParser.Data
 
     }
 }
-
-

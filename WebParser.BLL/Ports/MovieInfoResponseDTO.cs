@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebParser.App
 {
-    public class ImdbRatingResponseDTO
+    public class MovieInfoResponseDTO
     {
         public float ImdbRating { get; set; }
     }

@@ -47,7 +47,7 @@ namespace WebParser.UI
             set { lbImdbFilmRating.Content = value; }
         }
 
-        public SpaceObjectImageToViewResponseDTO SpaceObjectImageResponse
+        public SpaceObjectImageResponseModelView SpaceObjectImageResponse
         {
             set
             {

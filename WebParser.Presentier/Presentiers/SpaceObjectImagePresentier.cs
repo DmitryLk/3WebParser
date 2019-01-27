@@ -27,7 +27,7 @@ namespace WebParser.PresentierController
         public void Handle(SpaceObjectImageResponseDTO response)
         {
             //_view.SpaceObjectImage = response.SpaceObjectImage;
-            _view.SpaceObjectImageResponse = new SpaceObjectImageToViewResponseDTO
+            _view.SpaceObjectImageResponse = new SpaceObjectImageResponseModelView
             { SpaceObjectName = response.SpaceObjectName, SpaceObjectImage = response.SpaceObjectImage };
     }
 

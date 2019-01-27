@@ -14,7 +14,7 @@ namespace WebParser.PresentierController
     {
         
         string ImdbFilmRating { set; }
-        SpaceObjectImageToViewResponseDTO SpaceObjectImageResponse { set; }
+        SpaceObjectImageResponseModelView SpaceObjectImageResponse { set; }
 
     }
 }
