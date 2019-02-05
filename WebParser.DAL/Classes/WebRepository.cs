@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 
 namespace WebParser.Data
 {
-    public class WebRepository : IRepository
+    public class WebRepository : IWebRepository
     {
 
         public async Task<SpaceObjectImageResponseDTO> QueryFindSpaceObjectImageByName(string spaceObjectName)
@@ -23,11 +23,11 @@ namespace WebParser.Data
             // 3. Пользователю выводится список подходящих вариантов под его запрос
             // x. Из найденной страницы извлекается целевая информация
 
-            var parsingToolKit = new SpaceObjectWikipediaEnParsingToolKit(new HtmlByUriHtmlWebGetter());
-            var firstFoundPage = await parsingToolKit.GetHtmlDocumentByUri(new Uri("/w/index.php?search=" + spaceObjectName + "&title=Special%3ASearch&go=Go", UriKind.Relative));
-            var targetPage = await parsingToolKit.GetTargetPage(firstFoundPage);
+            var parsingToolkit = new SpaceObjectWikipediaEnParsingToolKit(new HtmlByUriHtmlWebGetter());
+            var firstFoundPage = await parsingToolkit.GetHtmlDocumentByUri(new Uri("/w/index.php?search=" + spaceObjectName + "&title=Special%3ASearch&go=Go", UriKind.Relative));
+            var targetPage = await parsingToolkit.GetTargetPage(firstFoundPage);
             
-            var spaceObjectImageUri = parsingToolKit.GetUriSpaceObjectImage(targetPage);
+            var spaceObjectImageUri = parsingToolkit.GetUriSpaceObjectImage(targetPage);
             var spaceObjectBitmapImage = new BitmapImage(spaceObjectImageUri) ?? throw new Exception("На удалось прочитать BitmapImage");
 
             return new SpaceObjectImageResponseDTO
@@ -37,13 +37,29 @@ namespace WebParser.Data
 
         public async Task<MovieInfoResponseDTO> QueryFindImdbByFilmName(string filmName)
         {
-            var parsingToolKit = new MovieInfoKinopoiskParsingToolKit(new HtmlByUriChromiumGetter());
-            var firstFoundPage = await parsingToolKit.GetHtmlDocumentByUri(new Uri("/index.php?kp_query=" + filmName + "&what=", UriKind.Relative));
-            var targetPage = await parsingToolKit.GetTargetPage(firstFoundPage);
+            var response = new MovieInfoResponseDTO();
+            var parsingToolkit = new MovieInfoKinopoiskParsingToolKit(new HtmlByUriChromiumGetter());
+
+            var firstFoundPage = await parsingToolkit.GetHtmlDocumentByUri(new Uri("/index.php?kp_query=" + filmName + "&what=", UriKind.Relative));
+
+            if (!parsingToolkit.IsTargetPage(firstFoundPage))
+            {
+                var searchResultsList = await parsingToolkit.GetMovieList(firstFoundPage);
+                if (searchResultsList.Count() > 1)
+                {
+                    response.SearchCount = searchResultsList.Count();
+                    response.SearchResultsList = searchResultsList;
+                    return response;
+                }
+
+            }
+
+
+
+            var targetPage = await parsingToolkit.GetTargetPage(firstFoundPage);
             
 
-            MovieInfoResponseDTO v = new MovieInfoResponseDTO();
-            return v;
+            return response;
 
         }
 

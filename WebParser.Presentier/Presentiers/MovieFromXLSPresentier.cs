@@ -8,13 +8,13 @@ using WebParser.App;
 
 namespace WebParser.PresentierController
 {
-    public class ImdbRatingPresentier : IPresentier<MovieInfoResponseDTO>
+    public class MovieFromXLSPresentier : IPresentier<MovieInfoResponseDTO>
     {
         private readonly IPresentierView _view;
         private readonly IMessageServiceUI _messageServiceUI;
 
 
-        public ImdbRatingPresentier(IPresentierView view, IMessageServiceUI messageServiceUI)
+        public MovieFromXLSPresentier(IPresentierView view, IMessageServiceUI messageServiceUI)
         {
             _view = view;
             _messageServiceUI = messageServiceUI;

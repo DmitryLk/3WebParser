@@ -36,7 +36,6 @@ namespace WebParser.Data
         }
 
 
-
         public async Task<HtmlDocument> GetSearchResultsPage(HtmlDocument checkedDocument)
         {
             var disambiguationLinkList = ExtractListUriByInnerTextKeywordsList(checkedDocument, new List<string> { "(disambiguation)" });

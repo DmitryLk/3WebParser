@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 
 namespace WebParser.App
 {
-    public interface IRepository
+    public interface IWebRepository
     {
         Task<MovieInfoResponseDTO> QueryFindImdbByFilmName(string filmName);
         

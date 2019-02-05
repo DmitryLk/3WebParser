@@ -19,11 +19,11 @@ namespace WebParser.App
     {
         private readonly IPresentier<SpaceObjectImageResponseDTO> _presentier;
         private readonly IValidator<SpaceObjectNameRequestDTO> _validator;
-        private readonly IRepository _repository;
+        private readonly IWebRepository _repository;
 
 
 
-        public RequestSpaceObjectImageByNameInteractor(IPresentier<SpaceObjectImageResponseDTO> presentier, IRepository repository, IValidator<SpaceObjectNameRequestDTO> validator)
+        public RequestSpaceObjectImageByNameInteractor(IPresentier<SpaceObjectImageResponseDTO> presentier, IWebRepository repository, IValidator<SpaceObjectNameRequestDTO> validator)
         {
             _presentier = presentier;
             _validator = validator;

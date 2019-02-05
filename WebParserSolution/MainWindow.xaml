@@ -31,6 +31,14 @@
             </Button.Background>
         </Button>
 
+        <Button x:Name="butMovieInfoFromXLS" Content="MovieXLS" HorizontalAlignment="Left" Margin="299,43,0,0" VerticalAlignment="Top" Width="75" Height="19" Click="butMovieInfoFromXLS_Click">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                    <GradientStop Color="#FFBB5656" Offset="1"/>
+                    <GradientStop Color="White"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
 
 
         <TextBox x:Name="tbRequestString" HorizontalAlignment="Left" Height="23" Margin="172,9,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
@@ -70,7 +78,7 @@
                 <TextBlock>Текст справа</TextBlock>
             </StatusBarItem>
         </StatusBar>
-        <ListBox HorizontalAlignment="Left" Height="88" Margin="20,7,0,0" VerticalAlignment="Top" Width="147"/>
+        <ListBox x:Name="lbMovieList" HorizontalAlignment="Left" Height="88" Margin="20,7,0,0" VerticalAlignment="Top" Width="147"/>
 
 
     </Grid>

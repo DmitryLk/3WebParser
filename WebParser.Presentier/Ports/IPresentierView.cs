@@ -12,7 +12,7 @@ namespace WebParser.PresentierController
 {
     public interface IPresentierView
     {
-        
+        IEnumerable<string> MovieList { set; }
         string ImdbFilmRating { set; }
         SpaceObjectImageResponseModelView SpaceObjectImageResponse { set; }
 

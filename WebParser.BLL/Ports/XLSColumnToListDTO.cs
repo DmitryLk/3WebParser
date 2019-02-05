@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace WebParser.App
 {
-    public class MovieInfoResponseDTO
+    public class XLSColumnsToListDTO
     {
         public int SearchCount { get; set; }
-        public IEnumerable<MovieDTO> SearchResultsList { get; set; }
-        public float ImdbRating { get; set; }
+        public IEnumerable<IEnumerable<string>> SearchResultsList { get; set; }
+        
     }
 }

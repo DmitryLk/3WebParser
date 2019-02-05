@@ -31,6 +31,8 @@ namespace WebParser.Data
             throw new Exception("Не найдено страниц о космическом объекте в списке поиска");
         }
 
+     
+
         public Uri GetUriSpaceObjectImage(HtmlDocument checkedDocument)
         {
             string link = checkedDocument.DocumentNode.SelectSingleNode("//td[@colspan='2']")?.SelectSingleNode(".//a")?.SelectSingleNode(".//img")?.Attributes["src"]?.Value

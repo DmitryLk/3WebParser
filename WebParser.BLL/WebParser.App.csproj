@@ -81,15 +81,20 @@
   <ItemGroup>
     <Compile Include="Interfaces\IValidator.cs" />
     <Compile Include="Classes\Validator.cs" />
+    <Compile Include="Ports\XLSFileRequestDTO.cs" />
+    <Compile Include="Ports\MovieDTO.cs" />
     <Compile Include="Ports\IFilmDBRepository.cs" />
     <Compile Include="Ports\IInteractor.cs" />
+    <Compile Include="Ports\IXLSRepository.cs" />
+    <Compile Include="Ports\XLSColumnToListDTO.cs" />
     <Compile Include="Ports\SpaceObjectImageResponseDTO.cs" />
     <Compile Include="Ports\IPresentier.cs" />
-    <Compile Include="Ports\IRepository.cs" />
+    <Compile Include="Ports\IWebRepository.cs" />
     <Compile Include="Ports\FilmNameRequestDTO.cs" />
     <Compile Include="Ports\SpaceObjectNameRequestDTO.cs" />
     <Compile Include="Ports\MovieInfoResponseDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UseCases\RequestMovieFromXLSInteractor.cs" />
     <Compile Include="UseCases\RequestImdbByFilmNameInteractor.cs" />
     <Compile Include="UseCases\RequestSpaceObjectImageByNameInteractor.cs" />
   </ItemGroup>

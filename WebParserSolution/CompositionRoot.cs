@@ -25,7 +25,7 @@ namespace WebParser.UI
             _window = window ?? throw new ArgumentNullException(nameof(window));
         }
 
-
+       
 
         public void Register()
         {
@@ -35,6 +35,7 @@ namespace WebParser.UI
             builder.RegisterType<MessageServiceUI>().As<IMessageServiceUI>();
 
             builder.RegisterType<ImdbRatingPresentier>().WithParameter("view", _window);
+            builder.RegisterType<MovieFromXLSPresentier>().WithParameter("view", _window);
             builder.RegisterType<SpaceObjectImagePresentier>().WithParameter("view", _window);
 
 
@@ -54,8 +55,14 @@ namespace WebParser.UI
                 if (typeName == "ImdbRatingByFilmName")
                 {
                     var requestImdbByFilmNamePresentier = c.Resolve<ImdbRatingPresentier>(new NamedParameter("typeName", typeName));
-                    var requestImdbByFilmNameInteractor = c.Resolve<RequestImdbByFilmNameInteractor>(new NamedParameter("presentier", requestImdbByFilmNamePresentier));
+                    var requestImdbByFilmNameInteractor = c.Resolve<RequestMovieInfoByMovieNameInteractor>(new NamedParameter("presentier", requestImdbByFilmNamePresentier));
                     return c.Resolve<RequestImdbByFilmNameController>(new NamedParameter("interactor", requestImdbByFilmNameInteractor));
+                }
+                if (typeName == "MovieFromXLS")
+                {
+                    var requestMovieFromXLSPresentier = c.Resolve<MovieFromXLSPresentier>(new NamedParameter("typeName", typeName));
+                    var requestMovieFromXLSInteractor = c.Resolve<RequestMovieFromXLSInteractor>(new NamedParameter("presentier", requestMovieFromXLSPresentier));
+                    return c.Resolve<RequestMovieFromXLSController>(new NamedParameter("interactor", requestMovieFromXLSInteractor));
                 }
                 if (typeName == "SpaceObjectImageByName")
                 {
@@ -70,11 +77,14 @@ namespace WebParser.UI
 
 
 
-            builder.RegisterType<WebRepository>().As<IRepository>();
+            builder.RegisterType<WebRepository>().As<IWebRepository>();
+            builder.RegisterType<XLSRepository>().As<IXLSRepository>();
             builder.RegisterGeneric(typeof(Validator<>)).As(typeof(IValidator<>));
-            builder.RegisterType<RequestImdbByFilmNameInteractor>();
+            builder.RegisterType<RequestMovieInfoByMovieNameInteractor>();
             builder.RegisterType<RequestSpaceObjectImageByNameInteractor>();
+            builder.RegisterType<RequestMovieFromXLSInteractor>();
             builder.RegisterType<RequestImdbByFilmNameController>();
+            builder.RegisterType<RequestMovieFromXLSController>();
             builder.RegisterType<RequestSpaceObjectImageByNameController>();
             _container = builder.Build();
         }
@@ -84,13 +94,15 @@ namespace WebParser.UI
 
             var requestImdbByFilmNameController = _container.Resolve<IController>(new NamedParameter("typeName", "ImdbRatingByFilmName"));
             var requestSpaceObjectImageByNameController = _container.Resolve<IController>(new NamedParameter("typeName", "SpaceObjectImageByName"));
+            var requestMovieFromXLSController = _container.Resolve<IController>(new NamedParameter("typeName", "MovieFromXLS"));
 
 
 
             _window.ImdbRequestUIEvent += requestImdbByFilmNameController.Handle;
             _window.SpaceObjectImageRequestUIEvent += requestSpaceObjectImageByNameController.Handle;
+            _window.MovieFromXLSUIEvent += requestMovieFromXLSController.Handle;
 
-            
+
 
 
         }

@@ -27,6 +27,7 @@ namespace WebParser.UI
     {
 
         public event EventHandler<MyEventArgs> ImdbRequestUIEvent = delegate { };
+        public event EventHandler<MyEventArgs> MovieFromXLSUIEvent = delegate { };
         public event EventHandler<MyEventArgs> SpaceObjectImageRequestUIEvent = delegate { };
 
         public MainWindow()
@@ -46,6 +47,13 @@ namespace WebParser.UI
             //get { return tbFilmName.Text; }
             set { lbImdbFilmRating.Content = value; }
         }
+
+        public IEnumerable<string> MovieList
+        {
+            //get { return tbFilmName.Text; }
+            set { lbMovieList.ItemsSource = value; }
+        }
+
 
         public SpaceObjectImageResponseModelView SpaceObjectImageResponse
         {
@@ -68,8 +76,11 @@ namespace WebParser.UI
         private void butSpaceObject_Click(object sender, RoutedEventArgs e)
         {
             SpaceObjectImageRequestUIEvent?.Invoke(this, new MyEventArgs() { MyEventParameter = tbRequestString.Text });
+        }
 
-            
+        private void butMovieInfoFromXLS_Click(object sender, RoutedEventArgs e)
+        {
+            MovieFromXLSUIEvent?.Invoke(this, new MyEventArgs() { MyEventParameter = tbRequestString.Text });
         }
     }
 }

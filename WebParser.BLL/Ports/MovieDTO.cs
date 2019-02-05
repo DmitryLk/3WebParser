@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebParser.Domain
+namespace WebParser.App
 {
-    public class Film
+    public class MovieDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int Year { get; set; }
+        public string Year { get; set; }
         public string Country { get; set; }
 
 

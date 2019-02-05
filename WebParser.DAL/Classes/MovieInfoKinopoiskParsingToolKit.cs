@@ -8,6 +8,7 @@ using CefSharp;
 using CefSharp.OffScreen;
 using System.Threading;
 using CefSharp.Internals;
+using WebParser.App;
 
 namespace WebParser.Data
 {
@@ -20,24 +21,53 @@ namespace WebParser.Data
         public async Task<HtmlDocument> GetTargetPage(HtmlDocument checkedDocument)
         {
             HtmlDocument searchResultsPage;
-            if (IsTargetPage(checkedDocument) == true) return checkedDocument;
-            else if (IsSearchResultsPage(checkedDocument) == true) searchResultsPage = checkedDocument;
+            if (IsTargetPage(checkedDocument)) return checkedDocument;
+            else if (IsSearchResultsPage(checkedDocument)) searchResultsPage = checkedDocument;
             else if (IsLinkToSearchResultsPage(checkedDocument)) searchResultsPage = await GetSearchResultsPage(checkedDocument);
-            else if (IsResultNotFoundPage(checkedDocument)) throw new Exception("По запросу ничего не найдено"); 
+            else if (IsResultNotFoundPage(checkedDocument)) throw new Exception("По запросу ничего не найдено");
+            else if (IsProtectionFromRobot(checkedDocument)) throw new Exception("Сработка защиты от роботов");
             else throw new Exception("Найдена незнакомая страница");
 
             var searchedNodes = await FoundAllSearchResultsNodes(searchResultsPage);
 
-            if (searchedNodes!=null)
-            foreach (var node in searchedNodes)
-            {
-                //var resultPage = await GetHtmlDocumentByUri(uri);
-                //if (CheckPage_TargetPage(resultPage)) return resultPage;
-            }
+            string s1, s2;
+            var ls = new List<string>();
+            if (searchedNodes != null)
+                foreach (var node in searchedNodes)
+                {
+                    s1 = node.SelectSingleNode(".//p[@class='name']")?.SelectSingleNode(".//a[@href]")?.InnerText ?? "";
+                    s2 = node.SelectSingleNode(".//p[@class='name']")?.SelectSingleNode(".//span[@class='year']")?.InnerText ?? "";
+                    ls.Add(s1 + " (" + s2 + ")");
+                }
             throw new Exception("Не найдено страниц о космическом объекте в списке");
+            await Task.Delay(10);
+            return checkedDocument;
         }
 
+   
 
+
+
+        public async Task<IEnumerable<MovieDTO>> GetMovieList(HtmlDocument searchResultsPage)
+        {
+            string result;
+            var movieList = new List<MovieDTO>();
+            var searchedNodes = await FoundAllSearchResultsNodes(searchResultsPage) ?? throw new Exception("Пустой список поиска");
+
+            string name, year;
+            if (searchedNodes != null)
+                foreach (var node in searchedNodes)
+                {
+                    name = node.SelectSingleNode(".//p[@class='name']")?.SelectSingleNode(".//a[@href]")?.InnerText ?? "";
+                    year = node.SelectSingleNode(".//p[@class='name']")?.SelectSingleNode(".//span[@class='year']")?.InnerText ?? "";
+
+                    result = $"{name} ({year})";
+
+
+                    movieList.Add(new MovieDTO { Name = name, Year = year });
+                }
+            return movieList;
+        }
 
         public async Task<IEnumerable<HtmlNode>> FoundAllSearchResultsNodes(HtmlDocument checkedDocument)
         {
@@ -64,6 +94,8 @@ namespace WebParser.Data
                 do
                 {
                     var documentSearchPage = await GetHtmlDocumentByUri(uri);
+                    if (IsProtectionFromRobot(documentSearchPage)) throw new Exception("Сработка защиты от роботов");
+
 
                     var nodes = documentSearchPage.DocumentNode.SelectNodes("//div[contains(@class,'element')]") ?? throw new Exception("Не найдены элементы в разделе \"Похожие результаты\"");
 
@@ -89,7 +121,7 @@ namespace WebParser.Data
         public bool IsTargetPage(HtmlDocument checkedDocument)
         {
             int i = 0;
-            var keywordsList = new List<string> { "Eccentricity", "Volume", "Mass", "Orbital", "Temperature", "Semi-major", "anomaly" };
+            var keywordsList = new List<string> { "Рейтинг фильма", "Рейтинг кинокритиков", "Отзывы и рецензии зрителей", "Для того чтобы добавить рецензию", "режиссер", "композитор", "В главных ролях:" };
 
             foreach (var keyword in keywordsList)
             {
@@ -113,6 +145,13 @@ namespace WebParser.Data
         {
             return FindNodesByTagAndInnerText(checkedDocument, "К сожалению, по вашему запросу ничего не найдено...") != null;
         }
+
+        public bool IsProtectionFromRobot(HtmlDocument checkedDocument)
+        {
+            return FindNodesByTagAndInnerText(checkedDocument, "Система защиты от роботов решила") != null;
+        }
+        
+
 
         //--------------------------------------------------------------------------------------
 
