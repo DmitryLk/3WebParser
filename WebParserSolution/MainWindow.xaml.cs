@@ -28,7 +28,10 @@ namespace WebParser.UI
 
         public event EventHandler<MyEventArgs> ImdbRequestUIEvent = delegate { };
         public event EventHandler<MyEventArgs> MovieFromXLSUIEvent = delegate { };
-        public event EventHandler<MyEventArgs> SpaceObjectImageRequestUIEvent = delegate { };
+        public event EventHandler<MyEventArgs> SpaceObjectImageUIEvent = delegate { };
+        public event EventHandler<MyEventArgs> SpaceObjectImagesToFilesFromXLSUIEvent = delegate { };
+
+        //SpaceObjectImagesToFilesFromXLS
 
         public MainWindow()
         {
@@ -55,7 +58,7 @@ namespace WebParser.UI
         }
 
 
-        public SpaceObjectImageResponseModelView SpaceObjectImageResponse
+        public SpaceObjectImageResponseViewModel SpaceObjectImageResponse
         {
             set
             {
@@ -75,12 +78,26 @@ namespace WebParser.UI
 
         private void butSpaceObject_Click(object sender, RoutedEventArgs e)
         {
-            SpaceObjectImageRequestUIEvent?.Invoke(this, new MyEventArgs() { MyEventParameter = tbRequestString.Text });
+            SpaceObjectImageUIEvent?.Invoke(this, new MyEventArgs() { MyEventParameter = tbRequestString.Text });
         }
 
         private void butMovieInfoFromXLS_Click(object sender, RoutedEventArgs e)
         {
             MovieFromXLSUIEvent?.Invoke(this, new MyEventArgs() { MyEventParameter = tbRequestString.Text });
         }
+
+        private void butSpaceObjectToFile_Click(object sender, RoutedEventArgs e)
+        {
+            SpaceObjectImagesToFilesFromXLSUIEvent?.Invoke(this, new MyEventArgs() { MyEventParameter = tbRequestString.Text });
+        }
+
+        private void butBrowserOpen_Click(object sender, RoutedEventArgs e)
+        {
+            BrowserWindow browserWindow = new BrowserWindow();
+            browserWindow.Show();
+            //popupWindow.Title = value.SpaceObjectName.ToUpper();
+            //popupWindow.imgSpaceObjectImage.Source = value.SpaceObjectImage;
+        }
+
     }
 }

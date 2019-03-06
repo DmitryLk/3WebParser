@@ -7,7 +7,7 @@ using HtmlAgilityPack;
 
 namespace WebParser.Data
 {
-    class HtmlByUriHtmlWebGetter : IHtmlByUriGetter
+    public class HtmlByUriAgilityPackGetter : IHtmlByUriGetter
     {
         public async Task<HtmlDocument> GetHtml(string uri)
         {

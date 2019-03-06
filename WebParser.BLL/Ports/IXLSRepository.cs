@@ -10,9 +10,7 @@ namespace WebParser.App
 {
     public interface IXLSRepository
     {
-        //Task<XLSColumnToListDTO> QueryGetDataFromColumnUntilEmpty(string fileName, string listName, int columnNumber, int topRowNumber);
-        Task<MovieInfoResponseDTO> QueryGetMovieData(XLSFileRequestDTO requestDTO);
-
-
+        Task<XLSColumnsToListDTO> QueryGetDataFromColumnUntilEmpty(XLSFileRequestDTO requestDTO);
+        //Task<MovieInfoResponseDTO> QueryGetMovieData(XLSFileRequestDTO requestDTO);
     }
 }

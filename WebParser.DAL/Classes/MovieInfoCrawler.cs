@@ -9,14 +9,20 @@ using CefSharp.OffScreen;
 using System.Threading;
 using CefSharp.Internals;
 using WebParser.App;
+using NLog;
 
 namespace WebParser.Data
 {
-    class MovieInfoKinopoiskParsingToolKit : CommonParsingToolKit
+    class MovieInfoKinopoiskParsingToolKit : CommonParser
     {
-        
+        private readonly Logger _logger;
 
-        public MovieInfoKinopoiskParsingToolKit(IHtmlByUriGetter htmlGetter) : base("https://www.kinopoisk.ru/", htmlGetter) {}
+        public MovieInfoKinopoiskParsingToolKit(IHtmlByUriGetter htmlGetter, Logger logger) : 
+            base("https://www.kinopoisk.ru/", htmlGetter, logger)
+        {
+            _logger = logger;
+
+        }
 
         public async Task<HtmlDocument> GetTargetPage(HtmlDocument checkedDocument)
         {
@@ -44,9 +50,9 @@ namespace WebParser.Data
             return checkedDocument;
         }
 
-   
 
 
+     
 
         public async Task<IEnumerable<MovieDTO>> GetMovieList(HtmlDocument searchResultsPage)
         {
@@ -93,7 +99,7 @@ namespace WebParser.Data
             {
                 do
                 {
-                    var documentSearchPage = await GetHtmlDocumentByUri(uri);
+                    var documentSearchPage = await GetHtmlDocumentByUriAsync(uri);
                     if (IsProtectionFromRobot(documentSearchPage)) throw new Exception("Сработка защиты от роботов");
 
 

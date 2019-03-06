@@ -8,8 +8,8 @@
     <ProjectGuid>{2DDEEAB9-ED42-44B2-B9FF-136F314CDFA1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WebParser.BLL.Test</RootNamespace>
-    <AssemblyName>WebParser.BLL.Test</AssemblyName>
+    <RootNamespace>WebParser.App.Test</RootNamespace>
+    <AssemblyName>WebParser.App.Test</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -83,11 +83,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="CalculatorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WebParser.BLL\WebParser.App.csproj">
+      <Project>{9a431c7c-2ace-4a3c-989b-2d483e292bb5}</Project>
+      <Name>WebParser.App</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

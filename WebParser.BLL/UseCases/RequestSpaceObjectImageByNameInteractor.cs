@@ -7,12 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-
-
-
-
-
-
 namespace WebParser.App
 {
     public class RequestSpaceObjectImageByNameInteractor : IInteractor<SpaceObjectNameRequestDTO>

@@ -8,7 +8,7 @@ using System.Windows.Media.Imaging;
 
 namespace WebParser.PresentierController
 {
-    public class SpaceObjectImageResponseModelView
+    public class SpaceObjectImageResponseViewModel
     {
        
         public string SpaceObjectName { get; set; }

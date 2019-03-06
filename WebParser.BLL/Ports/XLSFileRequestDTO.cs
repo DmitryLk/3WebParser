@@ -13,10 +13,11 @@ namespace WebParser.App
         //[StringLength(30, MinimumLength = 1, ErrorMessage = "Film name lenght should be between 1 and 30")]
         //public string FilmName { get; set; }
 
-        public string fileName { get; set; }
-        public string listName { get; set; }
-        public int[] columnsNumber { get; set; }
-        public int topRowNumber { get; set; }
+        public string FileName { get; set; }
+        public string ListName { get; set; }
+        public int[] ColumnsNumber { get; set; }
+        public int TopRowNumber { get; set; }
+        public string TargetFolder { get; set; }
 
 
 

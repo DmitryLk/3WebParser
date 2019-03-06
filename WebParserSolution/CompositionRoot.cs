@@ -12,7 +12,7 @@ using WebParser.PresentierController;
 
 namespace WebParser.UI
 {
-    class CompositionRoot
+    class CompositionRoot : IDisposable
     {
 
         private readonly MainWindow _window;
@@ -34,20 +34,19 @@ namespace WebParser.UI
 
             builder.RegisterType<MessageServiceUI>().As<IMessageServiceUI>();
 
+            // PRESENTIERS
             builder.RegisterType<ImdbRatingPresentier>().WithParameter("view", _window);
             builder.RegisterType<MovieFromXLSPresentier>().WithParameter("view", _window);
             builder.RegisterType<SpaceObjectImagePresentier>().WithParameter("view", _window);
+            builder.RegisterType<SpaceObjectImagesToFilesFromXLSPresentier>().WithParameter("view", _window);
 
 
-            //builder.Register<IPresentier>((c, p) =>
-            //        {
-            //            var typeName = p.Named<string>("typeName");
-            //            if (typeName == "ImdbRatingByFilmName") return c.Resolve<ImdbRatingPresentier>(new NamedParameter("view", _window));
-            //            if (typeName == "SpaceObjectImageByName") return c.Resolve<SpaceObjectImagePresentier>(new NamedParameter("view", _window));
-            //            throw new Exception("Type specified is incorrect");
-            //        }
-            //     );
 
+            // CONTROLLERS
+            builder.RegisterType<RequestImdbByFilmNameController>();
+            builder.RegisterType<RequestMovieFromXLSController>();
+            builder.RegisterType<RequestSpaceObjectImageByNameController>();
+            builder.RegisterType<RequestSpaceObjectImagesToFilesFromXLSController>();
 
             builder.Register<IController>((c, p) =>
             {
@@ -70,23 +69,31 @@ namespace WebParser.UI
                     var requestSpaceObjectImageByNameInteractor = c.Resolve<RequestSpaceObjectImageByNameInteractor>(new NamedParameter("presentier", requestSpaceObjectImageByNamePresentier));
                     return c.Resolve<RequestSpaceObjectImageByNameController>(new NamedParameter("interactor", requestSpaceObjectImageByNameInteractor));
                 }
+                if (typeName == "SpaceObjectImagesToFilesFromXLS")
+                {
+                    var requestSpaceObjectImagesToFilesFromXLSPresentier = c.Resolve<SpaceObjectImagesToFilesFromXLSPresentier>(new NamedParameter("typeName", typeName));
+                    var requestSpaceObjectImagesToFilesFromXLSInteractor = c.Resolve<RequestSpaceObjectImagesToFilesByXLSInteractor>(new NamedParameter("presentier", requestSpaceObjectImagesToFilesFromXLSPresentier));
+                    return c.Resolve<RequestSpaceObjectImagesToFilesFromXLSController>(new NamedParameter("interactor", requestSpaceObjectImagesToFilesFromXLSInteractor));
+                }
 
                 throw new Exception("Type specified is incorrect");
             });
 
 
-
-
-            builder.RegisterType<WebRepository>().As<IWebRepository>();
-            builder.RegisterType<XLSRepository>().As<IXLSRepository>();
-            builder.RegisterGeneric(typeof(Validator<>)).As(typeof(IValidator<>));
+            // INTERACTORS
             builder.RegisterType<RequestMovieInfoByMovieNameInteractor>();
             builder.RegisterType<RequestSpaceObjectImageByNameInteractor>();
             builder.RegisterType<RequestMovieFromXLSInteractor>();
-            builder.RegisterType<RequestImdbByFilmNameController>();
-            builder.RegisterType<RequestMovieFromXLSController>();
-            builder.RegisterType<RequestSpaceObjectImageByNameController>();
+            builder.RegisterType<RequestSpaceObjectImagesToFilesByXLSInteractor>();
+
+
+            // INFRASTRUCTURE
+            builder.RegisterType<WebRepository>().As<IWebRepository>();
+            builder.RegisterType<XLSRepository>().As<IXLSRepository>();
+            builder.RegisterGeneric(typeof(Validator<>)).As(typeof(IValidator<>));
+
             _container = builder.Build();
+
         }
 
         public void Resolve()
@@ -95,25 +102,42 @@ namespace WebParser.UI
             var requestImdbByFilmNameController = _container.Resolve<IController>(new NamedParameter("typeName", "ImdbRatingByFilmName"));
             var requestSpaceObjectImageByNameController = _container.Resolve<IController>(new NamedParameter("typeName", "SpaceObjectImageByName"));
             var requestMovieFromXLSController = _container.Resolve<IController>(new NamedParameter("typeName", "MovieFromXLS"));
+            var requestSpaceObjectImagesToFilesFromXLSController = _container.Resolve<IController>(new NamedParameter("typeName", "SpaceObjectImagesToFilesFromXLS"));
+
+            
 
 
 
             _window.ImdbRequestUIEvent += requestImdbByFilmNameController.Handle;
-            _window.SpaceObjectImageRequestUIEvent += requestSpaceObjectImageByNameController.Handle;
+            _window.SpaceObjectImageUIEvent += requestSpaceObjectImageByNameController.Handle;
             _window.MovieFromXLSUIEvent += requestMovieFromXLSController.Handle;
+            _window.SpaceObjectImagesToFilesFromXLSUIEvent += requestSpaceObjectImagesToFilesFromXLSController.Handle;
 
-
-
+            
 
         }
 
         public void Release()
+        {
+            Dispose();
+        }
+
+        public void Dispose()
         {
             _container.Dispose();
         }
 
     }
 }
+
+//builder.Register<IPresentier>((c, p) =>
+//        {
+//            var typeName = p.Named<string>("typeName");
+//            if (typeName == "ImdbRatingByFilmName") return c.Resolve<ImdbRatingPresentier>(new NamedParameter("view", _window));
+//            if (typeName == "SpaceObjectImageByName") return c.Resolve<SpaceObjectImagePresentier>(new NamedParameter("view", _window));
+//            throw new Exception("Type specified is incorrect");
+//        }
+//     );
 
 
 //var requestSpaceObjectImageByNameInteractor = _container.Resolve<RequestSpaceObjectImageByNameInteractor>();

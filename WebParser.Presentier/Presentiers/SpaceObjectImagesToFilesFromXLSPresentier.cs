@@ -10,13 +10,13 @@ using WebParser.App;
 
 namespace WebParser.PresentierController
 {
-    public class SpaceObjectImagePresentier : IPresentier<SpaceObjectImageResponseDTO>
+    public class SpaceObjectImagesToFilesFromXLSPresentier : IPresentier<SpaceObjectImagesSaveToFilesResponseDTO>
     {
         private readonly IPresentierView _view;
         private readonly IMessageServiceUI _messageServiceUI;
 
 
-        public SpaceObjectImagePresentier (IPresentierView view, IMessageServiceUI messageServiceUI)
+        public SpaceObjectImagesToFilesFromXLSPresentier(IPresentierView view, IMessageServiceUI messageServiceUI)
         {
             _view = view;
             _messageServiceUI = messageServiceUI;
@@ -24,11 +24,11 @@ namespace WebParser.PresentierController
 
     
 
-        public void Handle(SpaceObjectImageResponseDTO response)
+        public void Handle(SpaceObjectImagesSaveToFilesResponseDTO response)
         {
             //_view.SpaceObjectImage = response.SpaceObjectImage;
-            _view.SpaceObjectImageResponse = new SpaceObjectImageResponseViewModel
-            { SpaceObjectName = response.SpaceObjectName, SpaceObjectImage = response.SpaceObjectImage };
+            //_view.SpaceObjectImageResponse = new SpaceObjectImageResponseViewModel
+            //{ SpaceObjectName = response.SpaceObjectName, SpaceObjectImage = response.SpaceObjectImage };
     }
 
 

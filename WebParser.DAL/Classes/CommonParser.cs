@@ -13,34 +13,53 @@ using CefSharp;
 using CefSharp.OffScreen;
 using System.Threading;
 using CefSharp.Internals;
+using System.Windows.Media.Imaging;
+using System.IO;
+using System.Net.Http;
+using NLog;
 
 namespace WebParser.Data
 {
-    class CommonParsingToolKit
+    public class CommonParser : IParser
     {
-        protected readonly Uri _baseUri;
-        protected readonly IHtmlByUriGetter _htmlGetter;
+        private readonly Uri _baseUri;
+        private readonly IHtmlByUriGetter _htmlGetter;
+        private readonly Logger _logger;
 
 
-        public CommonParsingToolKit(string baseUri, IHtmlByUriGetter htmlGetter)
+
+
+        public CommonParser(string baseUri, IHtmlByUriGetter htmlGetter, Logger logger)
         {
+            _logger = logger;
             _baseUri = new Uri(baseUri);
             _htmlGetter = htmlGetter;
         }
 
-        public async Task<HtmlDocument> GetHtmlDocumentByUri(Uri uri)
-        {
-            var searchPageUri = new Uri(_baseUri, uri);
-            var document = await _htmlGetter.GetHtml(searchPageUri.ToString());
-            return document;
-        }
+        //public async Task<HtmlDocument> GetHtmlDocumentByUri(IHtmlByUriGetter htmlGetter, string baseUri, string uri)
+        //{
+        //    var searchPageUri = new Uri(baseUri, new Uri(uri, UriKind.Relative));
+        //    var document = await htmlGetter.GetHtml(searchPageUri.ToString());
+        //    return document;
+        //}
 
 
         public async Task<HtmlDocument> GetSearchResultsPage(HtmlDocument checkedDocument)
         {
             var disambiguationLinkList = ExtractListUriByInnerTextKeywordsList(checkedDocument, new List<string> { "(disambiguation)" });
-            return await GetHtmlDocumentByUri(disambiguationLinkList.FirstOrDefault());
+            return await GetHtmlDocumentByUriAsync(disambiguationLinkList.FirstOrDefault());
         }
+
+        public async Task<HtmlDocument> GetHtmlDocumentByUriAsync(Uri uri)
+        {
+
+            var searchPageUri = new Uri(_baseUri, uri);
+            _logger.Debug(searchPageUri.ToString());
+            var document = await _htmlGetter.GetHtml(searchPageUri.ToString());
+            return document;
+        }
+
+
 
         public IEnumerable<Uri> ExtractListUriByInnerTextKeywordsList(HtmlDocument checkedDocument, List<string> keywordsList)
         {
@@ -75,6 +94,56 @@ namespace WebParser.Data
             var nodesFound = checkedDocument.DocumentNode.SelectNodes("//" + tag + "[text()[contains(., '" + textContains + "')]]");
             return nodesFound;
         }
+
+
+        public Task<BitmapImage> GetBitmapImageByUriAsync1(string link)
+        {
+            var uri = new Uri(_baseUri, link);
+            var tcs = new TaskCompletionSource<BitmapImage>();
+            BitmapImage bitmap = new BitmapImage(uri);
+
+            if (bitmap.IsDownloading)
+            {
+                bitmap.DownloadCompleted += (s, e) => tcs.SetResult(bitmap);
+                bitmap.DownloadFailed += (s, e) => tcs.SetException(e.ErrorException);
+            }
+            else
+            {
+                tcs.SetResult(bitmap);
+            }
+
+            return tcs.Task;
+        }
+
+        public async Task<BitmapImage> GetBitmapImageByUriAsync2(string link)
+        {
+            BitmapImage bitmap = null;
+            var uri = new Uri(_baseUri, link);
+            var httpClient = new HttpClient();
+
+            using (var response = await httpClient.GetAsync(uri))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    using (var stream = new MemoryStream())
+                    {
+                        await response.Content.CopyToAsync(stream);
+                        stream.Seek(0, SeekOrigin.Begin);
+
+                        bitmap = new BitmapImage();
+                        bitmap.BeginInit();
+                        bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                        bitmap.StreamSource = stream;
+                        bitmap.EndInit();
+                        bitmap.Freeze();
+                    }
+                }
+            }
+
+            return bitmap;
+        }
+
+
 
         //===================================================================================
 

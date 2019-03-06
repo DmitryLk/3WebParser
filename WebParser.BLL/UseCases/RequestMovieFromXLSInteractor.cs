@@ -26,8 +26,16 @@ namespace WebParser.App
         public async Task Execute(XLSFileRequestDTO requestDTO)
         {
             if (_validator.IsValid(requestDTO) ==false) throw new ArgumentException(_validator.GetValidationResultString(requestDTO));
-            var movieInfo = await _repository.QueryGetMovieData(requestDTO);
-            _presentier.Handle(movieInfo);
+
+
+            var results = new List<MovieDTO>();
+            var tempResults = await _repository.QueryGetDataFromColumnUntilEmpty(requestDTO);
+            foreach (var res in tempResults.SearchResultsList)
+            {
+                results.Add(new MovieDTO { Name = res.ElementAtOrDefault(0), Year = res.ElementAtOrDefault(1) });
+            }
+
+            _presentier.Handle(new MovieInfoResponseDTO { SearchResultsList = results });
         }
     }
 }

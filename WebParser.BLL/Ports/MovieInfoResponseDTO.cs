@@ -10,6 +10,6 @@ namespace WebParser.App
     {
         public int SearchCount { get; set; }
         public IEnumerable<MovieDTO> SearchResultsList { get; set; }
-        public float ImdbRating { get; set; }
+        //public float ImdbRating { get; set; }
     }
 }

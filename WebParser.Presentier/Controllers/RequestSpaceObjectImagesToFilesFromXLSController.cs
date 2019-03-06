@@ -5,15 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using WebParser.PresentierController;
 using WebParser.App;
+using System.IO;
 
 namespace WebParser.PresentierController
 {
-    public class RequestMovieFromXLSController : IController
+    public class RequestSpaceObjectImagesToFilesFromXLSController : IController
     {
         private readonly IInteractor<XLSFileRequestDTO> _interactor;
         private readonly IMessageServiceUI _messageServiceUI;
 
-        public RequestMovieFromXLSController(IInteractor<XLSFileRequestDTO> interactor, IMessageServiceUI messageServiceUI)
+        public RequestSpaceObjectImagesToFilesFromXLSController(IInteractor<XLSFileRequestDTO> interactor, IMessageServiceUI messageServiceUI)
         {
             _interactor = interactor;
             _messageServiceUI = messageServiceUI;
@@ -24,7 +25,7 @@ namespace WebParser.PresentierController
         {
             try
             {
-                await _interactor.Execute(new XLSFileRequestDTO { FileName = "Ссылки.xlsx", ListName = "flm", ColumnsNumber = new int[] { 2, 3 }, TopRowNumber = 2 });
+                await _interactor.Execute(new XLSFileRequestDTO { FileName = "Solar system.xlsx", ListName = "Лист1", ColumnsNumber = new int[] { 1, 11 }, TopRowNumber = 3, TargetFolder= $@"{Directory.GetCurrentDirectory()}\PlanetImages\" });
             }
             catch (Exception ex)
             {

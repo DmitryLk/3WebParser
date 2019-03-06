@@ -8,59 +8,78 @@ using System.Text;
 using System.Threading.Tasks;
 using WebParser.App;
 using System.Windows.Media.Imaging;
-
-
+using System.Net.Http;
+using NLog;
+using NLog.Targets;
 
 namespace WebParser.Data
 {
     public class WebRepository : IWebRepository
     {
+        private readonly SpaceObjectCrawler _crawler;
+        private readonly Logger _logger;
+
+        public WebRepository()
+        {
+            _logger = LogManager.GetCurrentClassLogger();
+
+            var parser = new CommonParser("https://en.wikipedia.org/", new HtmlByUriAgilityPackGetter(), _logger);
+
+            _crawler = new SpaceObjectCrawler(parser, _logger);
+
+        }
 
         public async Task<SpaceObjectImageResponseDTO> QueryFindSpaceObjectImageByName(string spaceObjectName)
         {
-            // 1. По поисковому запросу пользователя через поиск на сайте находится первая страница
-            // 2. Определяется тип страницы (список вариантов найденного, целевая страница, ничего не найдено(по запросу ничего не найдено))
-            // 3. Пользователю выводится список подходящих вариантов под его запрос
-            // x. Из найденной страницы извлекается целевая информация
 
-            var parsingToolkit = new SpaceObjectWikipediaEnParsingToolKit(new HtmlByUriHtmlWebGetter());
-            var firstFoundPage = await parsingToolkit.GetHtmlDocumentByUri(new Uri("/w/index.php?search=" + spaceObjectName + "&title=Special%3ASearch&go=Go", UriKind.Relative));
-            var targetPage = await parsingToolkit.GetTargetPage(firstFoundPage);
-            
-            var spaceObjectImageUri = parsingToolkit.GetUriSpaceObjectImage(targetPage);
-            var spaceObjectBitmapImage = new BitmapImage(spaceObjectImageUri) ?? throw new Exception("На удалось прочитать BitmapImage");
+
+            _logger.Debug(spaceObjectName);
+          
+     
+
+            var spaceObjectBitmapImage = await _crawler.GetBitmapImageByName(spaceObjectName); // ?? throw new Exception("На удалось найти BitmapImage");
+
 
             return new SpaceObjectImageResponseDTO
-            { SpaceObjectImageUri = spaceObjectImageUri, SpaceObjectName = spaceObjectName, SpaceObjectImage = spaceObjectBitmapImage };
-            
+            { SpaceObjectName = spaceObjectName, SpaceObjectImage = spaceObjectBitmapImage };
+            //{ SpaceObjectImageUri = spaceObjectImageUri, SpaceObjectName = spaceObjectName, SpaceObjectImage = spaceObjectBitmapImage };
+
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         public async Task<MovieInfoResponseDTO> QueryFindImdbByFilmName(string filmName)
         {
-            var response = new MovieInfoResponseDTO();
-            var parsingToolkit = new MovieInfoKinopoiskParsingToolKit(new HtmlByUriChromiumGetter());
+            var parsingToolkit = new MovieInfoKinopoiskParsingToolKit(new HtmlByUriChromiumGetter(), _logger);
 
-            var firstFoundPage = await parsingToolkit.GetHtmlDocumentByUri(new Uri("/index.php?kp_query=" + filmName + "&what=", UriKind.Relative));
+            var firstFoundPage = await parsingToolkit.GetHtmlDocumentByUriAsync(new Uri("/index.php?kp_query=" + filmName + "&what=", UriKind.Relative));
 
             if (!parsingToolkit.IsTargetPage(firstFoundPage))
             {
                 var searchResultsList = await parsingToolkit.GetMovieList(firstFoundPage);
                 if (searchResultsList.Count() > 1)
                 {
-                    response.SearchCount = searchResultsList.Count();
-                    response.SearchResultsList = searchResultsList;
-                    return response;
+                    return new MovieInfoResponseDTO() { SearchCount = searchResultsList.Count(), SearchResultsList = searchResultsList };
                 }
 
             }
-
-
-
             var targetPage = await parsingToolkit.GetTargetPage(firstFoundPage);
             
-
-            return response;
-
+            return new MovieInfoResponseDTO();
         }
 
     }

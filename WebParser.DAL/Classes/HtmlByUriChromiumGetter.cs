@@ -9,7 +9,7 @@ using CefSharp.Internals;
 
 namespace WebParser.Data
 {
-    class HtmlByUriChromiumGetter : IHtmlByUriGetter
+    public class HtmlByUriChromiumGetter : IHtmlByUriGetter
     {
         public async Task<HtmlDocument> GetHtml(string uri)
         {

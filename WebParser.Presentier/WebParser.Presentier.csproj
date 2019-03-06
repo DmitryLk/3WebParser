@@ -80,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\IController.cs" />
+    <Compile Include="Controllers\RequestSpaceObjectImagesToFilesFromXLSController.cs" />
     <Compile Include="Controllers\RequestMovieFromXLSController.cs" />
     <Compile Include="Controllers\RequestSpaceObjectImageByNameController.cs" />
     <Compile Include="Controllers\RequestImdbByFilmNameController.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="Ports\IPresentierView.cs" />
     <Compile Include="Ports\SpaceObjectImageResponseModelView.cs" />
     <Compile Include="Presentiers\MovieFromXLSPresentier.cs" />
+    <Compile Include="Presentiers\SpaceObjectImagesToFilesFromXLSPresentier.cs" />
     <Compile Include="Presentiers\SpaceObjectImagePresentier.cs" />
     <Compile Include="Presentiers\ImdbRatingPresentier.cs" />
     <Compile Include="Ports\MyEventArgs.cs" />

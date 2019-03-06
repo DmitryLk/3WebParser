@@ -17,19 +17,7 @@ namespace WebParser.Data
     public class XLSRepository : IXLSRepository
     {
       
-        public async Task<MovieInfoResponseDTO> QueryGetMovieData(XLSFileRequestDTO requestDTO)
-        {
-            var tempResults = await QueryGetDataFromColumnUntilEmpty(requestDTO);
-            var results = new List<MovieDTO>();
-
-            foreach (var res in tempResults.SearchResultsList)
-            {
-                results.Add(new MovieDTO { Name = res.ElementAtOrDefault(0), Year = res.ElementAtOrDefault(1) });
-            }
-
-            return new MovieInfoResponseDTO {SearchResultsList= results };
-
-        }
+     
 
         public async Task<XLSColumnsToListDTO> QueryGetDataFromColumnUntilEmpty(XLSFileRequestDTO requestDTO)
         {
@@ -38,15 +26,15 @@ namespace WebParser.Data
             List<string> rowValue;
             await Task.Run(() =>
             {
-                using (var wb = new XLWorkbook(requestDTO.fileName))
+                using (var wb = new XLWorkbook(requestDTO.FileName))
                 {
-                    var ws = wb.Worksheet(requestDTO.listName);
+                    var ws = wb.Worksheet(requestDTO.ListName);
                     {
-                        var row = ws.Row(requestDTO.topRowNumber);
-                        while (!row.Cell(requestDTO.columnsNumber[0]).IsEmpty())
+                        var row = ws.Row(requestDTO.TopRowNumber);
+                        while (!row.Cell(requestDTO.ColumnsNumber[0]).IsEmpty())
                         {
                             rowValue = new List<string>();
-                            foreach (var col in requestDTO.columnsNumber)
+                            foreach (var col in requestDTO.ColumnsNumber)
                             {
                                 cellValue = row.Cell(col).GetString();
                                 rowValue.Add(cellValue);
@@ -63,3 +51,18 @@ namespace WebParser.Data
         }
     }
 }
+
+
+//public async Task<MovieInfoResponseDTO> QueryGetMovieData(XLSFileRequestDTO requestDTO)
+//{
+//    var tempResults = await QueryGetDataFromColumnUntilEmpty(requestDTO);
+//    var results = new List<MovieDTO>();
+
+//    foreach (var res in tempResults.SearchResultsList)
+//    {
+//        results.Add(new MovieDTO { Name = res.ElementAtOrDefault(0), Year = res.ElementAtOrDefault(1) });
+//    }
+
+//    return new MovieInfoResponseDTO {SearchResultsList= results };
+
+//}
