@@ -5,7 +5,7 @@ namespace WebParser.App
 {
     public interface IValidator<T>
     {
-        string GetValidationResultString(T checkedObject);
-        bool IsValid(T checkedObject);
+        bool IsValid(T checkedObject, out string validationResultString);
+        //string GetValidationResultString(T checkedObject);
     }
 }

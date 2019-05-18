@@ -29,7 +29,8 @@ namespace WebParser.PresentierController
             //_view.SpaceObjectImage = response.SpaceObjectImage;
             //_view.SpaceObjectImageResponse = new SpaceObjectImageResponseViewModel
             //{ SpaceObjectName = response.SpaceObjectName, SpaceObjectImage = response.SpaceObjectImage };
-    }
+            _view.butSpaceObjectToFileState = true;
+        }
 
 
 

@@ -18,7 +18,7 @@ namespace WebParser.Data
         private readonly Logger _logger;
 
         public MovieInfoKinopoiskParsingToolKit(IHtmlByUriGetter htmlGetter, Logger logger) : 
-            base("https://www.kinopoisk.ru/", htmlGetter, logger)
+            base(new Uri("https://www.kinopoisk.ru/"), htmlGetter, logger)
         {
             _logger = logger;
 
@@ -84,7 +84,7 @@ namespace WebParser.Data
             htmlNodes.Add(nodeMostWanted);
 
 
-            uri = ExtractListUriByInnerTextKeywordsList(checkedDocument, new List<string> { "Похожие результаты" }).First();
+            uri = ExtractLinksByInnerText(checkedDocument, new List<string> { "Похожие результаты" }).First();
 
 
             if (uri == null)    // раздела Похожие результаты нет - надо найти ноды element на этой же странице

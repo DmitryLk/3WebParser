@@ -69,6 +69,13 @@ namespace WebParser.UI
             }
         }
 
+        public bool butSpaceObjectToFileState
+        {
+            set
+            {
+                butSpaceObjectToFile.IsEnabled = value;
+            }
+        }
 
 
         private void butIMDB_Click(object sender, RoutedEventArgs e)
@@ -88,6 +95,7 @@ namespace WebParser.UI
 
         private void butSpaceObjectToFile_Click(object sender, RoutedEventArgs e)
         {
+            butSpaceObjectToFile.IsEnabled = false;
             SpaceObjectImagesToFilesFromXLSUIEvent?.Invoke(this, new MyEventArgs() { MyEventParameter = tbRequestString.Text });
         }
 

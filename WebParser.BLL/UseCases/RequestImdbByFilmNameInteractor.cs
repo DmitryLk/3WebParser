@@ -25,7 +25,8 @@ namespace WebParser.App
 
         public async Task Execute(FilmNameRequestDTO requestDTO)
         {
-            if (!_validator.IsValid(requestDTO)) throw new ArgumentException(_validator.GetValidationResultString(requestDTO));
+            if (_validator.IsValid(requestDTO, out var validationResult) == false) throw new ArgumentException(validationResult);
+
             var movieInfo = await _repository.QueryFindImdbByFilmName(requestDTO.FilmName);
             _presentier.Handle(movieInfo);
         }

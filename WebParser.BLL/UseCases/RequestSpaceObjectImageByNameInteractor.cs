@@ -26,8 +26,9 @@ namespace WebParser.App
 
         public async Task Execute(SpaceObjectNameRequestDTO requestDTO)
         {
-            if (_validator.IsValid(requestDTO) == false) throw new ArgumentException(_validator.GetValidationResultString(requestDTO));
-            var imageDTO = await _repository.QueryFindSpaceObjectImageByName(requestDTO.SpaceObjectName);
+            if (_validator.IsValid(requestDTO, out var validationResult) == false) throw new ArgumentException(validationResult);
+
+            var imageDTO = await _repository.QueryFindSpaceObjectImage(new RequestToWebRepositoryDTO { Number="0", Variants = new List<string> { requestDTO.SpaceObjectName } });
             _presentier.Handle(imageDTO);
         }
 

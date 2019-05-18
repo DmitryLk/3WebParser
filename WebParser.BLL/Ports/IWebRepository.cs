@@ -13,6 +13,6 @@ namespace WebParser.App
     {
         Task<MovieInfoResponseDTO> QueryFindImdbByFilmName(string filmName);
         
-        Task<SpaceObjectImageResponseDTO> QueryFindSpaceObjectImageByName(string spaceObjectName);
+        Task<SpaceObjectImageResponseDTO> QueryFindSpaceObjectImage(RequestToWebRepositoryDTO spaceObjectNameVariants);
     }
 }

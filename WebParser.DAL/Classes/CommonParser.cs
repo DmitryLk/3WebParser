@@ -29,10 +29,10 @@ namespace WebParser.Data
 
 
 
-        public CommonParser(string baseUri, IHtmlByUriGetter htmlGetter, Logger logger)
+        public CommonParser(Uri baseUri, IHtmlByUriGetter htmlGetter, Logger logger)
         {
             _logger = logger;
-            _baseUri = new Uri(baseUri);
+            _baseUri = baseUri;
             _htmlGetter = htmlGetter;
         }
 
@@ -46,7 +46,7 @@ namespace WebParser.Data
 
         public async Task<HtmlDocument> GetSearchResultsPage(HtmlDocument checkedDocument)
         {
-            var disambiguationLinkList = ExtractListUriByInnerTextKeywordsList(checkedDocument, new List<string> { "(disambiguation)" });
+            var disambiguationLinkList = ExtractLinksByInnerText(checkedDocument, new List<string> { "(disambiguation)" });
             return await GetHtmlDocumentByUriAsync(disambiguationLinkList.FirstOrDefault());
         }
 
@@ -54,14 +54,13 @@ namespace WebParser.Data
         {
 
             var searchPageUri = new Uri(_baseUri, uri);
-            _logger.Debug(searchPageUri.ToString());
             var document = await _htmlGetter.GetHtml(searchPageUri.ToString());
             return document;
         }
 
 
 
-        public IEnumerable<Uri> ExtractListUriByInnerTextKeywordsList(HtmlDocument checkedDocument, List<string> keywordsList)
+        public IEnumerable<Uri> ExtractLinksByInnerText(HtmlDocument checkedDocument, List<string> keywordsList)
         {
             Uri uri;
             foreach (var keyword in keywordsList)

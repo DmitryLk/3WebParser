@@ -6,91 +6,99 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using WebParser.App;
 
 namespace WebParser.Data
 {
+  
 
-    public class SpaceObjectCrawler
+
+    public class SpaceObjectCrawlerWikiEn
     {
         private readonly IParser _parser;
         private readonly Logger _logger;
+        private readonly Uri _baseUri;
+        private List<Uri> _history;
 
-        public SpaceObjectCrawler(IParser parser, Logger logger)
+        public SpaceObjectCrawlerWikiEn(Logger logger)
         {
-            _parser = parser ?? throw new ArgumentNullException(nameof(parser));
+            _baseUri = new Uri("https://en.wikipedia.org/");
+            _parser = new CommonParser(_baseUri, new HtmlByUriAgilityPackGetter(), _logger);
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-     
 
-        public async Task<BitmapImage> GetBitmapImageByName(string spaceObjectName)
+        public async Task<HtmlUriDocument> GetInitialPage(string spaceObjectName)
+        {
+            var uri = new Uri(_baseUri, $"/w/index.php?search={spaceObjectName}&title=Special%3ASearch&go=Go");
+            var document = new HtmlUriDocument { Uri = uri, Document = await _parser.GetHtmlDocumentByUriAsync(uri) };
+            return document;
+        }
+
+
+        public async Task<SpaceObjectImageResponseDTO> GetBitmapImageByName(string spaceObjectName)
         {
             //var targetPage = await GetSpaceObjectPage(spaceObjectName);
             BitmapImage spaceObjectBitmapImage = null;
 
+     
             var initialPage = await GetInitialPage(spaceObjectName);
-            var targetPage = await SearchTargetPageFromThisPage(initialPage);
+            _history = new List<Uri>();
+            var searchedPage = await SearchTargetPageFromThisPage(initialPage);
 
-            if (targetPage != null)
+            if (searchedPage != null)
             {
-                var spaceObjectBitmapImageLink = GetSpaceObjectImageLink(targetPage); // ?? _logger.Debug(spaceObjectName);
+                var spaceObjectBitmapImageLink = GetSpaceObjectImageLink(searchedPage); // ?? _logger.Debug(spaceObjectName);
 
                 if (spaceObjectBitmapImageLink!=null)
                     spaceObjectBitmapImage = await _parser.GetBitmapImageByUriAsync2(spaceObjectBitmapImageLink);
             }
-            return spaceObjectBitmapImage;
+            return new SpaceObjectImageResponseDTO { SpaceObjectImageUri = searchedPage?.Uri, SpaceObjectName = spaceObjectName, SpaceObjectImage = spaceObjectBitmapImage };
         }
 
-        //public bool IsTargetPage
-        //public bool IsDisambugationPage
-        //public bool IsLinkToDisambugationPage
-        //public bool IsLinkToTargetPage
-        //public bool IsResultNotFoundPage
 
 
-        public async Task<SpaceObjectDocument> SearchTargetPageFromThisPage(SpaceObjectDocument checkedDocument)
+
+        //возвращает Null если целевая страница не найдена
+        public async Task<HtmlUriDocument> SearchTargetPageFromThisPage(HtmlUriDocument checkedDocument)
         {
-            SpaceObjectDocument resultDocument = null;
-            if (checkedDocument.IsTargetPage) return checkedDocument;
+            // документ уже проверялся? - выход
+            if (_history.Any(u => u == checkedDocument.Uri))
+                return null;
+            _history.Add(checkedDocument.Uri);
 
-            if (checkedDocument.IsResultNotFoundPage) return null;
 
-            if (checkedDocument.IsDisambugationPage)
+            HtmlUriDocument resultDocument;
+            var pageType = GetPageType(checkedDocument);
+
+
+            _logger.Debug($"{checkedDocument.Uri} - {pageType.ToString()}");
+            IEnumerable<Uri> uriList;
+            List<string> keywords=null;
+
+            switch (pageType)
             {
-                var uriList = _parser.ExtractListUriByInnerTextKeywordsList(checkedDocument.Document, new List<string> { "moon", "planet", "asteroid", "comet" });
-                foreach (var uri in uriList)
-                {
-                    var nextDocument = new SpaceObjectDocument(_parser);
-                    nextDocument.Document= await _parser.GetHtmlDocumentByUriAsync(uri);
-                    resultDocument = await SearchTargetPageFromThisPage(nextDocument);
-                    if (resultDocument != null) return resultDocument;
-                }
+
+                case PageTypes.TargetPage: return checkedDocument;
+                case PageTypes.ResultNotFoundPage: return null;
+                case PageTypes.UnknownPage: return null;
+                case PageTypes.AnotherDomen: return null;
+
+                case PageTypes.DisambugationPage: keywords = new List<string> { "moon", "planet", "asteroid", "comet" }; break;
+                case PageTypes.LinkToDisambugationPage: keywords = new List<string> { "(disambiguation)" }; break;
+                case PageTypes.LinkToSpacePage: keywords= new List<string> { "moon", "planet", "asteroid", "comet" }; break;
             }
 
-            if (checkedDocument.IsLinkToDisambugationPage)
+            uriList = _parser.ExtractLinksByInnerText(checkedDocument.Document, keywords);
+            foreach (var uri in uriList)
             {
-                var uriList = _parser.ExtractListUriByInnerTextKeywordsList(checkedDocument.Document, new List<string> { "(disambiguation)" });
-                foreach (var uri in uriList)
-                {
-                    var nextDocument = new SpaceObjectDocument(_parser);
-                    nextDocument.Document = await _parser.GetHtmlDocumentByUriAsync(uri);
-                    resultDocument = await SearchTargetPageFromThisPage(nextDocument);
-                    if (resultDocument != null) return resultDocument;
-                }
+                var nextDocument = new HtmlUriDocument { Uri = uri, Document = await _parser.GetHtmlDocumentByUriAsync(uri) };
+                resultDocument = await SearchTargetPageFromThisPage(nextDocument);
+                if (resultDocument != null) return resultDocument;
             }
 
-            if (checkedDocument.IsLinkToTargetPage)
-            {
-                var uriList = _parser.ExtractListUriByInnerTextKeywordsList(checkedDocument.Document, new List<string> { "moon", "planet", "asteroid", "comet" });
-                foreach (var uri in uriList)
-                {
-                    var nextDocument = new SpaceObjectDocument(_parser);
-                    nextDocument.Document = await _parser.GetHtmlDocumentByUriAsync(uri);
-                    resultDocument = await SearchTargetPageFromThisPage(nextDocument);
-                    if (resultDocument != null) return resultDocument;
-                }
-            }
-            return resultDocument;
+            return null;
+
         }
 
         public async Task<int> MySum(int a, int b)
@@ -99,16 +107,46 @@ namespace WebParser.Data
             return a + b;
         }
 
-        public async Task<SpaceObjectDocument> GetInitialPage(string spaceObjectName)
+
+        public PageTypes GetPageType(HtmlUriDocument checkedDocument)
         {
-            var uri = new Uri("/w/index.php?search=" + spaceObjectName + "&title=Special%3ASearch&go=Go", UriKind.Relative);
-            var document = await _parser.GetHtmlDocumentByUriAsync(uri);
-            return new SpaceObjectDocument(_parser, document);
+            //IsNotIdentifiedPage = false;
+
+            int i = 0;
+            var keywordsList = new List<string> { "Eccentricity", "Volume", "Mass", "Orbital", "Temperature", "Semi-major", "anomaly" };
+            foreach (var keyword in keywordsList)
+            {
+                if (_parser.FindNodesByTagAndInnerText(checkedDocument.Document, keyword) != null) i++;
+            }
+            if (i >= 3) return PageTypes.TargetPage;
+
+            if (checkedDocument.Document.DocumentNode.SelectSingleNode("//div[@class='catlinks']")?.SelectSingleNode(".//ul")?.
+                SelectSingleNode(".//li")?.SelectSingleNode("//a[text()[contains(., 'Astronomical objects')]]") !=null) return PageTypes.TargetPage;
+
+            //var temp = checkedDocument.Document.DocumentNode.SelectSingleNode("//p[@class='mw-search-createlink']")?.
+            //    SelectSingleNode(".//a[@class='new']")?.Attributes["title"].Value;
+            //if (temp!=null && temp.Contains("(page does not exist)")) return PageTypes.IsPageDoesNotExist;
+
+            if (checkedDocument.Uri.GetLeftPart(System.UriPartial.Authority) != _baseUri.GetLeftPart(System.UriPartial.Authority)) return PageTypes.AnotherDomen;
+
+            if (_parser.FindNodesByTagAndInnerText(checkedDocument.Document, "Disambiguation pages") != null) return PageTypes.DisambugationPage;
+
+            if (_parser.FindNodesByTagAndInnerText(checkedDocument.Document, "(disambiguation)") != null) return PageTypes.LinkToDisambugationPage;
+
+
+            if (_parser.FindNodesByTagAndInnerText(checkedDocument.Document, "(moon)") != null) return PageTypes.LinkToSpacePage;
+            if (_parser.FindNodesByTagAndInnerText(checkedDocument.Document, "(planet)") != null) return PageTypes.LinkToSpacePage;
+            if (_parser.FindNodesByTagAndInnerText(checkedDocument.Document, "(asteroid)") != null) return PageTypes.LinkToSpacePage;
+            if (_parser.FindNodesByTagAndInnerText(checkedDocument.Document, "(comet)") != null) return PageTypes.LinkToSpacePage;
+
+            if (_parser.FindNodesByTagAndInnerText(checkedDocument.Document, "К сожалению, по вашему запросу ничего не найдено...") != null) return PageTypes.ResultNotFoundPage;
+
+            return PageTypes.UnknownPage;
         }
 
         //=============================================================================================================================================
-      
-        public string GetSpaceObjectImageLink(SpaceObjectDocument document)
+
+        public string GetSpaceObjectImageLink(HtmlUriDocument document)
         {
             return document.Document.DocumentNode.SelectSingleNode("//td[@colspan='2']")?.SelectSingleNode(".//a")?.SelectSingleNode(".//img")?.Attributes["src"]?.Value; // ?? throw new Exception("На странице не нашлось изображения космического тела");
         }

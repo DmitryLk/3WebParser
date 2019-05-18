@@ -16,34 +16,31 @@ namespace WebParser.Data
 {
     public class WebRepository : IWebRepository
     {
-        private readonly SpaceObjectCrawler _crawler;
+        private readonly SpaceObjectCrawlerWikiEn _crawlerWikiEn;
         private readonly Logger _logger;
 
         public WebRepository()
         {
             _logger = LogManager.GetCurrentClassLogger();
-
-            var parser = new CommonParser("https://en.wikipedia.org/", new HtmlByUriAgilityPackGetter(), _logger);
-
-            _crawler = new SpaceObjectCrawler(parser, _logger);
-
+            _crawlerWikiEn = new SpaceObjectCrawlerWikiEn(_logger);
         }
 
-        public async Task<SpaceObjectImageResponseDTO> QueryFindSpaceObjectImageByName(string spaceObjectName)
+        public async Task<SpaceObjectImageResponseDTO> QueryFindSpaceObjectImage(RequestToWebRepositoryDTO requestDTO)
         {
+            int i = 0;
+            _logger.Debug($"{requestDTO.Number} =======================WIKI EN===============================================================");
+            SpaceObjectImageResponseDTO spaceObjectBitmapImageDTO;
+            do
+            {
+                _logger.Debug(requestDTO.Variants[i]);
+                spaceObjectBitmapImageDTO = await _crawlerWikiEn.GetBitmapImageByName(requestDTO.Variants[i]);
+                if (spaceObjectBitmapImageDTO.SpaceObjectImage == null) _logger.Debug("Image not found on page");
+                _logger.Debug("");
+            }
+            while (++i < requestDTO.Variants.Count && spaceObjectBitmapImageDTO.SpaceObjectImage==null);
 
-
-            _logger.Debug(spaceObjectName);
-          
-     
-
-            var spaceObjectBitmapImage = await _crawler.GetBitmapImageByName(spaceObjectName); // ?? throw new Exception("На удалось найти BitmapImage");
-
-
-            return new SpaceObjectImageResponseDTO
-            { SpaceObjectName = spaceObjectName, SpaceObjectImage = spaceObjectBitmapImage };
-            //{ SpaceObjectImageUri = spaceObjectImageUri, SpaceObjectName = spaceObjectName, SpaceObjectImage = spaceObjectBitmapImage };
-
+            return spaceObjectBitmapImageDTO;
+            
         }
 
 

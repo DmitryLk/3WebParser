@@ -101,6 +101,7 @@
     <Compile Include="UseCases\RequestImdbByFilmNameInteractor.cs" />
     <Compile Include="UseCases\RequestSpaceObjectsFilesByXLSInteractor.cs" />
     <Compile Include="UseCases\RequestSpaceObjectImageByNameInteractor.cs" />
+    <Compile Include="Ports\RequestToWebRepositoryDTO.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WebParser.Domain\WebParser.Domain.csproj">

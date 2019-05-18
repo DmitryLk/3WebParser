@@ -10,22 +10,13 @@ namespace WebParser.App
 {
     public class Validator<T> : IValidator<T>
     {
-        public bool IsValid(T checkedObject)
-        {
-            var context = new ValidationContext(checkedObject);
-            var results = new List<ValidationResult>();
-            
-            return Validator.TryValidateObject(checkedObject, context, results, true);
-        }
-
-        public string GetValidationResultString(T checkedObject)
+        public bool IsValid(T checkedObject, out string validationResultString)
         {
             var context = new ValidationContext(checkedObject);
             var results = new List<ValidationResult>();
             StringBuilder resultString = new StringBuilder();
 
-            Validator.TryValidateObject(checkedObject, context, results, true);
-
+            var validationResult = Validator.TryValidateObject(checkedObject, context, results, true);
 
             if (results.Count() > 0)
             {
@@ -36,13 +27,49 @@ namespace WebParser.App
                             resultString.AppendFormat("  {0} --> {1}{2}", s.MemberNames.FirstOrDefault(), s.ErrorMessage, Environment.NewLine));
             }
             else
+            {
                 resultString.AppendLine("We not found validations errors.");
+            }
 
-            return resultString.ToString();
+            validationResultString = resultString.ToString();
+
+            return validationResult;
         }
     }
-
 }
+
+
+
+
+
+
+
+
+
+
+
+//public string GetValidationResultString(T checkedObject)
+//{
+//    var context = new ValidationContext(checkedObject);
+//    var results = new List<ValidationResult>();
+//    StringBuilder resultString = new StringBuilder();
+
+//    Validator.TryValidateObject(checkedObject, context, results, true);
+
+
+//    if (results.Count() > 0)
+//    {
+//        resultString.AppendLine("We found the next validations errors:");
+//        results.ToList()
+//            .ForEach(
+//                s =>
+//                    resultString.AppendFormat("  {0} --> {1}{2}", s.MemberNames.FirstOrDefault(), s.ErrorMessage, Environment.NewLine));
+//    }
+//    else
+//        resultString.AppendLine("We not found validations errors.");
+
+//    return resultString.ToString();
+//}
 
 /*
     if (!Validator.TryValidateObject(checkedObject, context, results, true))

@@ -25,7 +25,7 @@ namespace WebParser.App
 
         public async Task Execute(XLSFileRequestDTO requestDTO)
         {
-            if (_validator.IsValid(requestDTO) ==false) throw new ArgumentException(_validator.GetValidationResultString(requestDTO));
+            if (_validator.IsValid(requestDTO, out var validationResult) ==false) throw new ArgumentException(validationResult);
 
 
             var results = new List<MovieDTO>();

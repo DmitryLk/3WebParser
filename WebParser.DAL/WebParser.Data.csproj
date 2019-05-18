@@ -118,7 +118,7 @@
     <Compile Include="Classes\HtmlByUriChromiumGetter.cs" />
     <Compile Include="Classes\HtmlByUriAgilityPackGetter.cs" />
     <Compile Include="Classes\ICommonParser.cs" />
-    <Compile Include="Classes\SpaceObjectDocument.cs" />
+    <Compile Include="Classes\HtmlUriDocument.cs" />
     <Compile Include="Classes\XLSRepository.cs" />
     <Compile Include="Interfaces\IHtmlByUriGetter.cs" />
     <Compile Include="Classes\MovieInfoCrawler.cs" />

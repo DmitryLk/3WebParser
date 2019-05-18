@@ -31,19 +31,45 @@ namespace WebParser.App
 
         public async Task Execute(XLSFileRequestDTO requestDTO)
         {
-            if (_validator.IsValid(requestDTO) == false) throw new ArgumentException(_validator.GetValidationResultString(requestDTO));
+            string type;
+            if (_validator.IsValid(requestDTO, out var validationResult) == false) throw new ArgumentException(validationResult);
 
             //var fileSaver = new BitmapImageHelper();
             XLSColumnsToListDTO tempResults = await _xlsRepository.QueryGetDataFromColumnUntilEmpty(requestDTO);
 
             foreach (var res in tempResults.SearchResultsList)
             {
-                SpaceObjectImageResponseDTO imageDTO = await _webRepository.QueryFindSpaceObjectImageByName(res.ElementAtOrDefault(1));
-                if (imageDTO.SpaceObjectImage != null) BitmapImageHelper.SaveImage(imageDTO.SpaceObjectImage, requestDTO.TargetFolder, res.ElementAtOrDefault(0) + "_" + res.ElementAtOrDefault(1));
+                var requestWebRepository = new RequestToWebRepositoryDTO
+                {
+                    Number = res.ElementAtOrDefault(0),
+                    Variants = new List<string>
+                    {
+                        res.ElementAtOrDefault(2).ToString(),
+                        $"{res.ElementAtOrDefault(2)} {GetStringTypeSpaceObject(res.ElementAtOrDefault(1))}"
+                    }
+                };
+
+                SpaceObjectImageResponseDTO imageDTO = await _webRepository.QueryFindSpaceObjectImage(requestWebRepository);
+
+                
+                if (imageDTO.SpaceObjectImage != null) BitmapImageHelper.SaveImage(imageDTO.SpaceObjectImage, requestDTO.TargetFolder, res.ElementAtOrDefault(0) + "_" + res.ElementAtOrDefault(2));
 
             }
             _presentier.Handle(new SpaceObjectImagesSaveToFilesResponseDTO { Result = true });
 
+        }
+
+        private string GetStringTypeSpaceObject(string type)
+        {
+            switch (type)
+            {
+                case "1": return "star";
+                case "2": return "planet";
+                case "3": return "moon";
+                case "4": return "comet";
+                case "5": return "asteroid";
+            }
+            return string.Empty;
         }
 
     }

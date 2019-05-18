@@ -15,6 +15,7 @@ namespace WebParser.PresentierController
         IEnumerable<string> MovieList { set; }
         string ImdbFilmRating { set; }
         SpaceObjectImageResponseViewModel SpaceObjectImageResponse { set; }
+        bool butSpaceObjectToFileState { set; }
 
     }
 }
